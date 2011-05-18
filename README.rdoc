@@ -1,0 +1,56 @@
+== Getting Rails3 to work on AppEngine
+
+What you will need:
+* Get an AppEngine account at: https://appengine.google.com/
+* AppEngine java SDK: http://code.google.com/appengine/downloads.html
+* JRuby (rvm use jruby)
+
+== How-To
+
+Get jruby:
+
+    rvm install jruby && rvm use jruby
+
+To my knowledge there are currently no AppEngine activerecord adaptors, so generate your rails without activerecord:
+    rails new appengine-rails3 --skip-active-record
+
+Currently jruby breaks with the latest arel (2.10.1), so make sure to set arel to use 2.0.9 explicitly in your Gemfile.
+
+Next, install bundle:
+    bundle install
+
+Now is the time to create appengine configuration xml file. Feel free to copy from https://github.com/ratnikov/appengine-rails3/blob/master/appengine-web.xml and edit it to use your appengine username and version.
+
+== Building war file
+
+Get warbler to help building war package:
+
+    gem install warbler
+
+Generate vanilla warble config:
+
+    warble config
+
+Most of the default warble settings are okay, with two minor adjustments:
+- Add `config.features = [ "gemjar" ]` so that warbler packages all gems as a single jar to avoid AppEngine's max file limit.
+- Add `config.includes = FileList["appengine-web.xml"]` to include the configuration file in the war.
+
+Build the war:
+
+    `warble war`
+    
+AppEngine scripts expect an unpacked war. Hence need to build it and then unpack it to a directory:
+    `mkdir deploy; cd deploy && jar xf ../appengine-rails3.war && cd ..`
+
+Deploy it to engine:
+    <appengine-sdk-dir>/bin/update.sh --enable_jar_splitting update deploy # Assuming you unzipped appengine sdk to <appengine-sdk-dir
+
+Done!
+
+== Caveats
+
+- The first time you access your AppEngine site, you may get a 500 because rails was taking a while to load and AppEngine got tired waiting for it. Give it a few seconds.
+
+== "But it doesn't work.... Help?"
+
+Ping me: ratnikov@gmail.com or @dfr|work at #rubyonrails on FreeNode.
