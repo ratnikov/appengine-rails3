@@ -4,4 +4,8 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
+$LOAD_PATH << 'vendor'
+
 AppengineRails3::Application.load_tasks
+
+require 'thrust/tasks'
