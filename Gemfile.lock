@@ -66,6 +66,7 @@ GEM
 
 PLATFORMS
   java
+  ruby
 
 DEPENDENCIES
   arel (= 2.0.9)
