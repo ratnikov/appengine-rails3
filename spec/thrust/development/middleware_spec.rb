@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-
-describe Thrust::Development::Middleware do
+describe Thrust::Development::Middleware, :type => :acceptance do
   class Application
     def call(env)
       [ 200, { 'Content-Type' => 'text/plain' }, [ 'Application OK' ] ]
@@ -12,33 +11,21 @@ describe Thrust::Development::Middleware do
     include Thrust::ControllerExtensions
   end
 
-  def app
+  before do 
     @middleware ||= Thrust::Development::Middleware.new(Application.new)
 
-    @middleware
-  end
-
-  before do 
-    app # force application initialization
+    Capybara.app = @middleware
 
     @controller = TestController.new
   end
 
-  it "allow response to GET login url" do
-    login_url = @middleware.with_environment { @controller.login_url('/back') }
-
-    get login_url
-
-    last_response.should be_ok
-  end
-
-  it "should respond to POST login url" do
+  it "should allow logging in with an email" do
     login_url = @middleware.with_environment { @controller.login_url('/back-url') }
 
-    post login_url, { :email => 'someone@example.com' }
+    visit login_url
 
-    last_response.should be_redirection
-    last_response.location.should == '/back-url'
+    fill_in 'email', :with => 'someone@example.com'
+    click_button 'Log in!'
 
     @middleware.with_environment do
       @controller.logged_in?.should be_true
@@ -49,8 +36,8 @@ describe Thrust::Development::Middleware do
   end
 
   it "should delegate #call to application for unknown route" do
-    post '/unknown-route'
+    visit '/unknown-route'
 
-    last_response.body.should == 'Application OK'
+    page.source.should == 'Application OK'
   end
 end
