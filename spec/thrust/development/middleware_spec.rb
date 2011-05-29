@@ -73,9 +73,33 @@ describe Thrust::Development::Middleware, :type => :acceptance do
     end
   end
 
+  it "should allow logging out" do
+    login_as 'someone@example.com'
+
+    logout_url = @middleware.with_environment { @controller.logout_url('/foo') }
+    visit logout_url
+
+    @middleware.with_environment do
+      @controller.should_not be_logged_in
+    end
+
+    page.current_path.should == '/foo'
+  end
+
   it "should delegate #call to application for unknown route" do
     visit '/unknown-route'
 
     page.source.should == 'Application OK'
+  end
+
+  private
+
+  def login_as(email)
+    visit @middleware.with_environment { @controller.login_url }
+
+    fill_in 'email', :with => 'someone@example.com'
+    click_button 'Log in!'
+
+    @middleware.with_environment { @controller.should be_logged_in }
   end
 end
