@@ -1,7 +1,7 @@
 module Thrust
   module ControllerExtensions
     def current_user
-      user_service.getCurrentUser
+      user_service.current_user
     end
 
     def admin?
@@ -9,7 +9,7 @@ module Thrust
     end
 
     def logged_in?
-      user_service.isUserLoggedIn
+      user_service.user_logged_in?
     end
 
     def login_url(back)

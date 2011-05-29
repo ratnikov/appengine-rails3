@@ -3,15 +3,15 @@ module Thrust::Development
   class Environment
     attr_accessor :current_email, :admin
 
-    def getEmail
+    def email
       current_email
     end
 
-    def getAuthDomain
+    def auth_domain
       'gmail.com'
     end
 
-    def isLoggedIn
+    def logged_in?
       ! current_email.nil?
     end
 
@@ -19,7 +19,7 @@ module Thrust::Development
       !! admin
     end
 
-    def get_attributes
+    def attributes
       { }
     end
   end
