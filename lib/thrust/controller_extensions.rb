@@ -1,5 +1,15 @@
 module Thrust
   module ControllerExtensions
+    def self.included(base)
+      if base.respond_to?(:helper_method)
+        base.helper_method *public_instance_methods
+      end
+
+      if base.respond_to?(:hide_action)
+        base.hide_action *public_instance_methods
+      end
+    end
+
     def current_user
       user_service.current_user
     end
