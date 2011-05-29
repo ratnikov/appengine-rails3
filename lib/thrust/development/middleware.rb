@@ -63,14 +63,16 @@ module Thrust::Development
 
     def call(env)
       Handler.new(::Rack::Request.new(env), app_engine_env).run do
-        ApiProxy.setEnvironmentForCurrentThread app_engine_env
-
-        response = @app.call env
-
-        ApiProxy.clearEnvironmentForCurrentThread
-
-        response
+        with_environment { @app.call env }
       end
+    end
+
+    def with_environment
+      ApiProxy.setEnvironmentForCurrentThread app_engine_env
+
+      yield
+    ensure
+      ApiProxy.clearEnvironmentForCurrentThread
     end
 
     def app_engine_env
