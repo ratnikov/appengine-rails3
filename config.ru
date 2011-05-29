@@ -2,7 +2,4 @@
 
 require ::File.expand_path('../config/environment',  __FILE__)
 
-require 'thrust/login_middleware'
-
-run Thrust::LoginMiddleware.new
-# run AppengineRails3::Application
+run AppengineRails3::Application

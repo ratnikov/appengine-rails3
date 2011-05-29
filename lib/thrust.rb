@@ -4,6 +4,8 @@ Dir.glob(File.join(File.dirname(__FILE__), '..', 'vendor', 'appengine-java-sdk',
   require jar
 end
 
+module Thrust
+end
+
 require 'thrust/controller_extensions'
-require 'thrust/dev_server'
-require 'thrust/development/rack'
+require 'thrust/development/middleware'

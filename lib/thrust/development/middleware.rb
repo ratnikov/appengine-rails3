@@ -42,7 +42,6 @@ module Thrust::Development
         @app_engine.current_email = request.params['email']
 
         location = request.params['continue']
-        puts "redirecting to: #{location.inspect}"
 
         [ 301, { 'Location' => location }, [ "Redirecting to #{location}..." ] ]
       end
@@ -55,7 +54,6 @@ module Thrust::Development
     end
 
     def initialize(app)
-      puts "initialized!!! for #{Thread.current}"
       @app = app
 
       proxy = com.google.appengine.tools.development.ApiProxyLocalFactory.new.create ServerEnvironment.new
