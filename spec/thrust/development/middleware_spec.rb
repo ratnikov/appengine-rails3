@@ -1,18 +1,24 @@
 require 'spec_helper'
 
-describe Thrust::Development::Rack do
+describe Thrust::Development::Middleware do
+  class Application
+    def call(env)
+      [ 200, { 'Content-Type' => 'text/plain' }, [ 'Application OK' ] ]
+    end
+  end
+
   class TestController
     include Thrust::ControllerExtensions
   end
 
   def app
-    @app ||= Thrust::Development::Rack.new
+    @middleware ||= Thrust::Development::Middleware.new(Application.new)
 
-    @app
+    @middleware
   end
 
   before do 
-    app.initialize!
+    app # force application initialization
 
     @controller = TestController.new
   end
@@ -31,5 +37,11 @@ describe Thrust::Development::Rack do
     user = @controller.current_user
 
     user.email.should == 'someone@example.com'
+  end
+
+  it "should delegate #call to application for unknown route" do
+    post '/unknown-route'
+
+    last_response.body.should == 'Application OK'
   end
 end

@@ -2,7 +2,7 @@ require 'thrust/development/server_environment'
 require 'thrust/development/environment'
 
 module Thrust::Development
-  class Rack
+  class Middleware
     java_import 'com.google.apphosting.api.ApiProxy'
 
     class Handler
@@ -17,7 +17,7 @@ module Thrust::Development
         case request.path
         when '/_ah/login' then request.post? ? create_session : new_session
        else
-          [ 404, { }, [ ] ]
+          block_given? ? yield : [ 404, { }, [ ] ]
         end
       end
 
@@ -27,7 +27,8 @@ module Thrust::Development
   <body>
     <h1>Enter your email to login:</h1>
 
-    <form action="#{request.path}"> method="POST">
+    <form action="#{request.path}" method="POST">
+      <input type="hidden" name="continue" value="#{request.params['continue']}" />
       <p>Email: <input type="text" name="email" /></p>
 
       <p><input type="submit" value="Log in!" /></p>
@@ -40,7 +41,10 @@ module Thrust::Development
       def create_session
         @app_engine.current_email = request.params['email']
 
-        [ 302, { 'Location' => request.params['continue'] }, [ ] ]
+        location = request.params['continue']
+        puts "redirecting to: #{location.inspect}"
+
+        [ 301, { 'Location' => location }, [ "Redirecting to #{location}..." ] ]
       end
 
       private
@@ -50,19 +54,25 @@ module Thrust::Development
       end
     end
 
-    def initialize!
-      return if @initialized
+    def initialize(app)
+      puts "initialized!!! for #{Thread.current}"
+      @app = app
 
       proxy = com.google.appengine.tools.development.ApiProxyLocalFactory.new.create ServerEnvironment.new
 
       ApiProxy.setDelegate proxy
-      ApiProxy.setEnvironmentForCurrentThread app_engine_env
-
-      @initialized = true
     end
 
     def call(env)
-      Handler.new(::Rack::Request.new(env), app_engine_env).run
+      Handler.new(::Rack::Request.new(env), app_engine_env).run do
+        ApiProxy.setEnvironmentForCurrentThread app_engine_env
+
+        response = @app.call env
+
+        ApiProxy.clearEnvironmentForCurrentThread
+
+        response
+      end
     end
 
     def app_engine_env
