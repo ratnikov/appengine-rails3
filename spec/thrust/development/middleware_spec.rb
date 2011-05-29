@@ -19,44 +19,58 @@ describe Thrust::Development::Middleware, :type => :acceptance do
     @controller = TestController.new
   end
 
-  it "should allow logging in with an email" do
-    login_url = @middleware.with_environment { @controller.login_url('/foo') }
+  context "logging in" do
 
-    visit login_url
+    it "should allow logging in with an email" do
+      login_url = @middleware.with_environment { @controller.login_url }
 
-    fill_in 'email', :with => 'someone@example.com'
-    click_button 'Log in!'
+      visit login_url
 
-    @middleware.with_environment do
-      @controller.logged_in?.should be_true
-      user = @controller.current_user
+      fill_in 'email', :with => 'someone@example.com'
+      click_button 'Log in!'
 
-      user.email.should == 'someone@example.com'
+      @middleware.with_environment do
+        @controller.logged_in?.should be_true
+        user = @controller.current_user
+
+        user.email.should == 'someone@example.com'
+      end
+
+      page.current_path.should == '/'
     end
 
-    page.current_path.should == '/foo'
-  end
+    it "should allow logging in as admin" do
+      login_url = @middleware.with_environment { @controller.login_url }
 
-  it "should allow logging in as admin" do
-    login_url = @middleware.with_environment { @controller.login_url('/foo') }
+      visit login_url
 
-    visit login_url
+      fill_in 'email', :with => 'admin@example.com'
+      check 'admin'
 
-    fill_in 'email', :with => 'admin@example.com'
-    check 'admin'
+      click_button 'Log in!'
 
-    click_button 'Log in!'
+      @middleware.with_environment do
+        @controller.should be_logged_in
+        @controller.should be_admin
 
-    @middleware.with_environment do
-      @controller.should be_logged_in
-      @controller.should be_admin
+        user = @controller.current_user
 
-      user = @controller.current_user
+        user.email.should == 'admin@example.com'
+      end
 
-      user.email.should == 'admin@example.com'
+      page.current_path.should == '/'
     end
 
-    page.current_path.should == '/foo'
+    it "should allow custom path to redirect to" do
+      login_url = @middleware.with_environment { @controller.login_url('/custom-path') }
+
+      visit login_url
+
+      fill_in 'email', :with => 'someone@example.com'
+      click_button 'Log in!'
+
+      page.current_path.should == '/custom-path'
+    end
   end
 
   it "should delegate #call to application for unknown route" do

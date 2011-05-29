@@ -12,7 +12,7 @@ module Thrust
       user_service.user_logged_in?
     end
 
-    def login_url(back)
+    def login_url(back = '/')
       user_service.createLoginURL(back)
     end
 
