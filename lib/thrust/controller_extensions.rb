@@ -4,6 +4,10 @@ module Thrust
       user_service.getCurrentUser
     end
 
+    def admin?
+      user_service.user_admin?
+    end
+
     def logged_in?
       user_service.isUserLoggedIn
     end

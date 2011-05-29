@@ -20,7 +20,7 @@ describe Thrust::Development::Middleware, :type => :acceptance do
   end
 
   it "should allow logging in with an email" do
-    login_url = @middleware.with_environment { @controller.login_url('/back-url') }
+    login_url = @middleware.with_environment { @controller.login_url('/foo') }
 
     visit login_url
 
@@ -33,6 +33,30 @@ describe Thrust::Development::Middleware, :type => :acceptance do
 
       user.email.should == 'someone@example.com'
     end
+
+    page.current_path.should == '/foo'
+  end
+
+  it "should allow logging in as admin" do
+    login_url = @middleware.with_environment { @controller.login_url('/foo') }
+
+    visit login_url
+
+    fill_in 'email', :with => 'admin@example.com'
+    check 'admin'
+
+    click_button 'Log in!'
+
+    @middleware.with_environment do
+      @controller.should be_logged_in
+      @controller.should be_admin
+
+      user = @controller.current_user
+
+      user.email.should == 'admin@example.com'
+    end
+
+    page.current_path.should == '/foo'
   end
 
   it "should delegate #call to application for unknown route" do

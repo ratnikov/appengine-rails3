@@ -29,7 +29,11 @@ module Thrust::Development
 
     <form action="#{request.path}" method="POST">
       <input type="hidden" name="continue" value="#{request.params['continue']}" />
-      <p>Email: <input type="text" name="email" /></p>
+      <p>
+      Email: <input type="text" name="email" /> <br />
+
+      Admin: <input type="checkbox" name="admin" />
+      </p>
 
       <p><input type="submit" value="Log in!" /></p>
     </form>
@@ -40,6 +44,7 @@ module Thrust::Development
 
       def create_session
         @app_engine.current_email = request.params['email']
+        @app_engine.admin = !! request.params['admin']
 
         location = request.params['continue']
 
