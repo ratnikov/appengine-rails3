@@ -6,6 +6,7 @@ gem 'arel', '2.0.9'
 group :development, :test do
   gem 'capybara'
   gem 'rspec'
+  gem 'rspec-rails'
 end
 
 # Bundle edge Rails instead:
