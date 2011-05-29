@@ -26,6 +26,10 @@ module Thrust
       user_service.createLoginURL(back)
     end
 
+    def logout_url(back = '/')
+      user_service.create_logout_url(back)
+    end
+
     private
 
     def user_service

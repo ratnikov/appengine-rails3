@@ -22,5 +22,10 @@ module Thrust::Development
     def attributes
       { }
     end
+
+    def reset!
+      self.current_email = nil
+      self.admin = nil
+    end
   end
 end

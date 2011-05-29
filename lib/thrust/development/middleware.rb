@@ -16,6 +16,7 @@ module Thrust::Development
       def run
         case request.path
         when '/_ah/login' then request.post? ? create_session : new_session
+        when '/_ah/logout' then destroy_session 
        else
           block_given? ? yield : [ 404, { }, [ ] ]
         end
@@ -46,12 +47,22 @@ module Thrust::Development
         @app_engine.current_email = request.params['email']
         @app_engine.admin = !! request.params['admin']
 
+        redirect_back
+      end
+
+      def destroy_session
+        @app_engine.reset!
+
+        redirect_back
+      end
+
+      private
+
+      def redirect_back
         location = request.params['continue']
 
         [ 301, { 'Location' => location }, [ "Redirecting to #{location}..." ] ]
       end
-
-      private
 
       def render(response)
         [ 200, { 'Content-Type' => 'text/html' }, [ response ] ]
