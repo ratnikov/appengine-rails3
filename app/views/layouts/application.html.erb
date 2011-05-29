@@ -10,7 +10,7 @@
 
     <p class="login">
     <% if logged_in? -%>
-      Hey, <%= current_user.nickname %>! <%= "(oh, and it looks like you're an admin too!)" if admin? %>
+      Hey, <%= current_user.nickname %>! <%= "(oh, and it looks like you're an admin too!)" if admin? %>. You can also <%= link_to 'logout', logout_url %>.
     <% else -%>
       Oh look, you can <%= link_to 'login', login_url %>!
     <% end -%>
