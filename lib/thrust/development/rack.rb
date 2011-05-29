@@ -25,7 +25,13 @@ module Thrust::Development
           render <<-LOGIN
 <html>
   <body>
-    <p>Hello world!</p>
+    <h1>Enter your email to login:</h1>
+
+    <form action="#{request.path}"> method="POST">
+      <p>Email: <input type="text" name="email" /></p>
+
+      <p><input type="submit" value="Log in!" /></p>
+    </form>
   </body>
 </html>
           LOGIN
