@@ -1,5 +1,9 @@
 module Thrust
   module ControllerExtensions
+    def current_user
+      user_service.getCurrentUser
+    end
+
     def logged_in?
       user_service.isUserLoggedIn
     end

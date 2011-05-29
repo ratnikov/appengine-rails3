@@ -6,15 +6,22 @@ module Thrust::Development
     java_import 'com.google.apphosting.api.ApiProxy'
 
     class Handler
-      attr_reader :env
+      attr_reader :request
 
-      def initialize(env)
-        @env = env
+      def initialize(request, app_engine)
+        @app_engine = app_engine
+        @request = request
       end
 
       def run
         case request.path
-        when '/_ah/login'
+        when '/_ah/login' then request.post? ? create_session : new_session
+       else
+          [ 404, { }, [ ] ]
+        end
+      end
+
+      def new_session
           render <<-LOGIN
 <html>
   <body>
@@ -22,15 +29,12 @@ module Thrust::Development
   </body>
 </html>
           LOGIN
-        else
-          [ 404, { }, [ ] ]
-        end
-      end
+      end 
 
-      def request
-        @request ||= ::Rack::Request.new env
+      def create_session
+        @app_engine.current_email = request.params['email']
 
-        @request
+        [ 302, { 'Location' => request.params['continue'] }, [ ] ]
       end
 
       private
@@ -41,14 +45,24 @@ module Thrust::Development
     end
 
     def initialize!
+      return if @initialized
+
       proxy = com.google.appengine.tools.development.ApiProxyLocalFactory.new.create ServerEnvironment.new
 
       ApiProxy.setDelegate proxy
-      ApiProxy.setEnvironmentForCurrentThread Environment.new
+      ApiProxy.setEnvironmentForCurrentThread app_engine_env
+
+      @initialized = true
     end
 
     def call(env)
-      Handler.new(env).run
+      Handler.new(::Rack::Request.new(env), app_engine_env).run
+    end
+
+    def app_engine_env
+      @app_engine_env ||= Environment.new
+
+      @app_engine_env
     end
   end
 end
