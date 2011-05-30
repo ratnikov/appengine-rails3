@@ -3,18 +3,27 @@ require 'rake'
 SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.5.0.1.zip'
 
 config = Warbler::Config.new do |config|
+  config.bundler = true
   config.jar_name = 'package'
   config.features << 'gemjar'
   config.dirs = %w(app config lib log vendor tmp)
   config.includes = FileList["appengine-web.xml"]
+  config.excludes = FileList["vendor/appengine-java-sdk/**.*"]
 end
 
 Warbler::Task.new 'war', config
 
+def sdk_location
+  File.basename(SDK_LOCATION, ".zip")
+end
+
 namespace :thrust do
   task 'install-sdk' do
-    unless File.exists?('sdk')
-      zip_location = "tmp/%s" % File.basename(SDK_LOCATION)
+    system "mkdir -p sdk/"
+
+    Dir.chdir('sdk') do
+      zip_location = File.basename(SDK_LOCATION)
+
       if File.exists? zip_location
         puts "Using existing zip package..."
       else
@@ -23,13 +32,19 @@ namespace :thrust do
       end
 
       puts "Unpacking..."
-      system "unzip -qq -fo #{zip_location} -d tmp"
-
-      system "rm -rf sdk && ln -s tmp/#{File.basename(zip_location, '.zip')} sdk"
+      system "unzip -qq -o #{zip_location}"
       puts "Done!"
-    else
-      puts "Seems like sdk is already installed. Nothing to do!"
     end
+  end
+
+  desc "Starts AppEngine development server"
+  task :jetty => [ 'install-sdk', 'war:unpack' ] do
+    system "sdk/#{sdk_location}/bin/dev_appserver.sh war"
+  end
+
+  desc "Deploys application to AppEngine"
+  task :deploy => [ 'install-sdk', 'war:unpack' ] do
+    system "sdk/#{sdk_location}/bin/appcfg.sh --enable_jar_splitting update war/"
   end
 end
 
