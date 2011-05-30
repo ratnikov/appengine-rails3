@@ -1,18 +1,18 @@
 require 'rake'
 
+require 'warbler'
+
 SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.5.0.1.zip'
 
 config = Warbler::Config.new do |config|
-  config.bundler = true
-  config.jar_name = 'package'
-  config.features << 'gemjar'
+  config.features = %w(gemjar)
   config.dirs = %w(app config lib log vendor tmp)
   config.includes = FileList["appengine-web.xml"]
-  config.excludes = FileList["vendor/appengine-java-sdk/**.*"]
+  config.jar_name = 'package'
+  config.gems += %w(bundler jruby-openssl)
 end
 
 Warbler::Task.new 'war', config
-
 def sdk_location
   File.basename(SDK_LOCATION, ".zip")
 end
@@ -39,7 +39,11 @@ namespace :thrust do
 
   desc "Starts AppEngine development server"
   task :jetty => [ 'install-sdk', 'war:unpack' ] do
-    system "sdk/#{sdk_location}/bin/dev_appserver.sh war"
+    # Need to clean up rubyopts, or server will die with 'bundler/setup not found' error
+    ENV['RUBYOPT'] = ENV['RUBYOPT'].gsub '-rbundler/setup', '' unless ENV['RUBYOPT'].empty?
+
+    # doing exec, since the server blocks further execution anyway
+    exec "sh sdk/#{sdk_location}/bin/dev_appserver.sh war"
   end
 
   desc "Deploys application to AppEngine"
