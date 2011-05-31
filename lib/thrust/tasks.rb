@@ -8,7 +8,7 @@ config = Warbler::Config.new do |config|
   config.features = %w(gemjar)
   config.dirs = %w(app config lib log vendor tmp)
   config.includes = FileList["appengine-web.xml"]
-  config.excludes = FileList["vendor/appengine*/**"]
+  config.excludes = FileList["vendor/appengine*/development"]
   config.jar_name = 'package'
   config.gems += %w(bundler jruby-openssl)
 end
