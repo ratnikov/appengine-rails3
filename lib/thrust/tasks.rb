@@ -6,9 +6,9 @@ SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1
 
 config = Warbler::Config.new do |config|
   config.features = %w(gemjar)
-  config.dirs = %w(app config lib log vendor tmp)
+  config.dirs = %w(app config lib log tmp)
   config.includes = FileList["appengine-web.xml"]
-  config.excludes = FileList["vendor/appengine*/development"]
+  config.java_libs += FileList["vendor/appengine*/*jar"]
   config.jar_name = 'package'
   config.gems += %w(bundler jruby-openssl)
 end
