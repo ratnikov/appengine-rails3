@@ -34,6 +34,11 @@ Yea, it's that easy!
 
 - The first time you access your AppEngine site, you may get a 500, complaining about log stream being closed. Reloading the page tends to fix this bug. 
 
+== Cloning this repository
+
+At this time all of the codebase is highly experimental. I tend to rebase quite often and push the rebases upstream (making cloned repositories not compatible with updated).
+Thus, if you cloned, feel free to let you know, so I can give you a heads up if a rebase is coming and try to ease your pain.
+
 == Looks awesome! Can you help me get my stuff running on AppEngine?
 
 Ping me: ratnikov@gmail.com or @dfr|work at #rubyonrails on FreeNode.
