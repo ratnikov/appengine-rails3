@@ -8,4 +8,3 @@ module Thrust
 end
 
 require 'thrust/controller_extensions'
-require 'thrust/development/middleware'
