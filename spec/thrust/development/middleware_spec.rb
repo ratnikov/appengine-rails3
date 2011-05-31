@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'thrust/development'
+
 describe Thrust::Development::Middleware, :type => :acceptance do
   class Application
     def call(env)
