@@ -8,6 +8,7 @@ config = Warbler::Config.new do |config|
   config.features = %w(gemjar)
   config.dirs = %w(app config lib log vendor tmp)
   config.includes = FileList["appengine-web.xml"]
+  config.excludes = FileList["vendor/appengine*/**"]
   config.jar_name = 'package'
   config.gems += %w(bundler jruby-openssl)
 end
@@ -46,10 +47,15 @@ namespace :thrust do
     exec "sh sdk/#{sdk_location}/bin/dev_appserver.sh war"
   end
 
-  desc "Deploys application to AppEngine"
-  task :deploy => [ 'install-sdk', 'war:unpack' ] do
-    system "sdk/#{sdk_location}/bin/appcfg.sh --enable_jar_splitting update war/"
+  namespace :deploy do
+    desc 'Pushes current unpacked war package to appengine'
+    task :push do
+      system "sdk/#{sdk_location}/bin/appcfg.sh --enable_jar_splitting update war"
+    end
   end
+
+  desc "Deploys application to AppEngine"
+  task :deploy => [ 'install-sdk', 'war:unpack', 'deploy:push' ]
 end
 
 namespace :war do
