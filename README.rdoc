@@ -19,10 +19,10 @@ You can also run the appengine development server with:
 
   rake thrust:jetty
 
+This will package your current application, unpack it into war/ directory and run the dev_appserver pointing to it.
+
 Note that this will start the application in production mode. This is as close as you can get to running your application in AppEngine environment
 without doing a deploy.
-
-This will package your current application, unpack it into war/ directory and run the dev_appserver pointing to it.
 
 == Deploying to Appengine
 
