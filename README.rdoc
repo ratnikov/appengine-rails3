@@ -1,56 +1,39 @@
-== Getting Rails3 to work on AppEngine
+== What this is
 
-What you will need:
-* Get an AppEngine account at: https://appengine.google.com/
-* AppEngine java SDK: http://code.google.com/appengine/downloads.html
-* JRuby (rvm use jruby)
+This is a sample light-weight rails3 application, that is intended to work with AppEngine.
 
-== How-To
+I use it to drive development of "thrust" -- a library that will ease development of appengine applications in ruby.
+While this library is currently part of this application (located in lib/thrust) I am planning to extract it as soon
+as its feature set matures.
 
-Get jruby:
+== Development server
 
-    rvm install jruby && rvm use jruby
+You can run a rack server in development mode with whatever rack server you like. Webrick too:
 
-To my knowledge there are currently no AppEngine activerecord adaptors, so generate your rails without activerecord:
-    rails new appengine-rails3 --skip-active-record
+  rails server
 
-Currently jruby breaks with the latest arel (2.10.1), so make sure to set arel to use 2.0.9 explicitly in your Gemfile.
+Thrust adds a middleware that stubs out the appengine calls. This is similar to the appengine development server,
+but doesn't require the application to be packaged. Hence all the goodies, such as changes taking immediate effect, are available.
 
-Next, install bundle:
-    bundle install
+You can also run the appengine development server with:
 
-Now is the time to create appengine configuration xml file. Feel free to copy from https://github.com/ratnikov/appengine-rails3/blob/master/appengine-web.xml and edit it to use your appengine username and version.
+  rake thrust:jetty
 
-== Building war file
+Note that this will start the application in production mode. This is as close as you can get to running your application in AppEngine environment
+without doing a deploy.
 
-Get warbler to help building war package:
+This will package your current application, unpack it into war/ directory and run the dev_appserver pointing to it.
 
-    gem install warbler
+== Deploying to Appengine
 
-Generate vanilla warble config:
+  rake thrust:deploy
 
-    warble config
-
-Most of the default warble settings are okay, with two minor adjustments:
-- Add `config.features = [ "gemjar" ]` so that warbler packages all gems as a single jar to avoid AppEngine's max file limit.
-- Add `config.includes = FileList["appengine-web.xml"]` to include the configuration file in the war.
-
-Build the war:
-
-    `warble war`
-    
-AppEngine scripts expect an unpacked war. Hence need to build it and then unpack it to a directory:
-    `mkdir deploy; cd deploy && jar xf ../appengine-rails3.war && cd ..`
-
-Deploy it to engine:
-    <appengine-sdk-dir>/bin/update.sh --enable_jar_splitting update deploy # Assuming you unzipped appengine sdk to <appengine-sdk-dir
-
-Done!
+Yea, it's that easy!
 
 == Caveats
 
-- The first time you access your AppEngine site, you may get a 500 because rails was taking a while to load and AppEngine got tired waiting for it. Give it a few seconds.
+- The first time you access your AppEngine site, you may get a 500, complaining about log stream being closed. Reloading the page tends to fix this bug. 
 
-== "But it doesn't work.... Help?"
+== Looks awesome! Can you help me get my stuff running on AppEngine?
 
 Ping me: ratnikov@gmail.com or @dfr|work at #rubyonrails on FreeNode.
