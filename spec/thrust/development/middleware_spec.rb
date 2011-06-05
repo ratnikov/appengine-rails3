@@ -14,35 +14,30 @@ describe Thrust::Development::Middleware, :type => :acceptance do
   end
 
   before do 
-    @middleware ||= Thrust::Development::Middleware.new(Application.new)
-
-    Capybara.app = @middleware
+    Capybara.app = Thrust::Development::Middleware.new Application.new
 
     @controller = TestController.new
   end
 
   context "logging in" do
-
     it "should allow logging in with an email" do
-      login_url = @middleware.with_environment { @controller.login_url }
+      login_url = @controller.login_url
 
       visit login_url
 
       fill_in 'email', :with => 'someone@example.com'
       click_button 'Log in!'
 
-      @middleware.with_environment do
-        @controller.logged_in?.should be_true
-        user = @controller.current_user
+      @controller.logged_in?.should be_true
+      user = @controller.current_user
 
-        user.email.should == 'someone@example.com'
-      end
+      user.email.should == 'someone@example.com'
 
       page.current_path.should == '/'
     end
 
     it "should allow logging in as admin" do
-      login_url = @middleware.with_environment { @controller.login_url }
+      login_url = @controller.login_url
 
       visit login_url
 
@@ -51,20 +46,18 @@ describe Thrust::Development::Middleware, :type => :acceptance do
 
       click_button 'Log in!'
 
-      @middleware.with_environment do
-        @controller.should be_logged_in
-        @controller.should be_admin
+      @controller.should be_logged_in
+      @controller.should be_admin
 
-        user = @controller.current_user
+      user = @controller.current_user
 
-        user.email.should == 'admin@example.com'
-      end
+      user.email.should == 'admin@example.com'
 
       page.current_path.should == '/'
     end
 
     it "should allow custom path to redirect to" do
-      login_url = @middleware.with_environment { @controller.login_url('/custom-path') }
+      login_url = @controller.login_url('/custom-path')
 
       visit login_url
 
@@ -78,12 +71,10 @@ describe Thrust::Development::Middleware, :type => :acceptance do
   it "should allow logging out" do
     login_as 'someone@example.com'
 
-    logout_url = @middleware.with_environment { @controller.logout_url('/foo') }
+    logout_url = @controller.logout_url('/foo')
     visit logout_url
 
-    @middleware.with_environment do
-      @controller.should_not be_logged_in
-    end
+    @controller.should_not be_logged_in
 
     page.current_path.should == '/foo'
   end
@@ -97,11 +88,11 @@ describe Thrust::Development::Middleware, :type => :acceptance do
   private
 
   def login_as(email)
-    visit @middleware.with_environment { @controller.login_url }
+    visit @controller.login_url
 
     fill_in 'email', :with => 'someone@example.com'
     click_button 'Log in!'
 
-    @middleware.with_environment { @controller.should be_logged_in }
+    @controller.should be_logged_in
   end
 end

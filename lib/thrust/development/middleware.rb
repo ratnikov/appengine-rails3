@@ -3,13 +3,10 @@ require 'thrust/development/environment'
 
 module Thrust::Development
   class Middleware
-    java_import 'com.google.apphosting.api.ApiProxy'
-
     class Handler
       attr_reader :request
 
-      def initialize(request, app_engine)
-        @app_engine = app_engine
+      def initialize(request)
         @request = request
       end
 
@@ -44,19 +41,23 @@ module Thrust::Development
       end 
 
       def create_session
-        @app_engine.current_email = request.params['email']
-        @app_engine.admin = !! request.params['admin']
+        env.current_email = request.params['email']
+        env.admin = !! request.params['admin']
 
         redirect_back
       end
 
       def destroy_session
-        @app_engine.reset!
+        env.reset!
 
         redirect_back
       end
 
       private
+
+      def env
+        Thrust::Development.environment
+      end
 
       def redirect_back
         location = request.params['continue']
@@ -71,30 +72,12 @@ module Thrust::Development
 
     def initialize(app)
       @app = app
-
-      proxy = com.google.appengine.tools.development.ApiProxyLocalFactory.new.create ServerEnvironment.new
-
-      ApiProxy.setDelegate proxy
     end
 
     def call(env)
-      Handler.new(::Rack::Request.new(env), app_engine_env).run do
-        with_environment { @app.call env }
+      Handler.new(::Rack::Request.new(env)).run do
+        @app.call env
       end
-    end
-
-    def with_environment
-      ApiProxy.setEnvironmentForCurrentThread app_engine_env
-
-      yield
-    ensure
-      ApiProxy.clearEnvironmentForCurrentThread
-    end
-
-    def app_engine_env
-      @app_engine_env ||= Environment.new
-
-      @app_engine_env
     end
   end
 end
