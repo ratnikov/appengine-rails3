@@ -9,6 +9,7 @@ group :development, :test do
   gem 'capybara'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'cucumber-rails'
 end
 
 # Bundle edge Rails instead:
