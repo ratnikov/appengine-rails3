@@ -19,6 +19,8 @@ module Thrust::Development
   end
 
   def engaged
+    return yield unless @environment.nil?
+
     @environment = Environment.new
 
     ApiProxy.setDelegate ApiProxyLocalFactory.new.create(ServerEnvironment.new)

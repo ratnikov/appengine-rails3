@@ -76,7 +76,7 @@ module Thrust::Development
 
     def call(env)
       Handler.new(::Rack::Request.new(env)).run do
-        @app.call env
+        Thrust::Development.engaged { @app.call env }
       end
     end
   end
