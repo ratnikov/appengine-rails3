@@ -12,7 +12,7 @@ module Thrust::Development
 
   def environment
     if @environment.nil?
-      warn "Environment doesn't seem to be initialized. Are you sure you invoked #{name}#engage ?"
+      raise "Environment doesn't seem to be initialized. Are you sure you invoked #{name}#engage ?"
     end
 
     @environment
@@ -23,14 +23,16 @@ module Thrust::Development
 
     @environment = Environment.new
 
-    ApiProxy.setDelegate ApiProxyLocalFactory.new.create(ServerEnvironment.new)
-    ApiProxy.set_environment_for_current_thread @environment
+    begin
+      ApiProxy.setDelegate ApiProxyLocalFactory.new.create(ServerEnvironment.new)
+      ApiProxy.set_environment_for_current_thread @environment
 
-    yield
-  ensure
-    ApiProxy.clear_environment_for_current_thread
+      yield
+    ensure
+      ApiProxy.clear_environment_for_current_thread
 
-    @environment = nil
+      @environment = nil
+    end
   end
 end
 
