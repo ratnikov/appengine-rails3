@@ -18,9 +18,17 @@ module Thrust::Development
     @environment
   end
 
-  def engaged
-    return yield unless @environment.nil?
+  def engaged?
+    !! @environment
+  end
 
+  def engaged(&blk)
+    engaged? ? yield : engaged!(&blk)
+  end
+
+  private
+
+  def engaged!
     @environment = Environment.new
 
     begin
