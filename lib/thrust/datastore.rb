@@ -28,7 +28,32 @@ class Thrust::Datastore
 
     datastore.put entity
   end
+
+  def exists?(key_or_hash)
+    case key_or_hash
+    when Hash
+      prepare_query(key_or_hash).count_entities > 0
+    else
+      begin
+        get(key_or_hash)
+        true
+      rescue RecordNotFound
+        false
+      end
+    end
+  end
+
   private
+
+  def prepare_query(filters)
+    query = Query.new kind
+
+    filters.each do |(k, v)|
+      query.add_filter k, Query::FilterOperator::EQUAL, v
+    end
+
+    datastore.prepare(query)
+  end
 
   def datastore
     @datastore ||= DatastoreServiceFactory.datastore_service
