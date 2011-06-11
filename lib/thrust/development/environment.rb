@@ -33,13 +33,5 @@ module Thrust::Development
       self.current_email = nil
       self.admin = nil
     end
-
-    def set_for_current_thread
-      ApiProxy.set_environment_for_current_thread self
-
-      yield
-    ensure
-      ApiProxy.clear_environment_for_current_thread
-    end
   end
 end

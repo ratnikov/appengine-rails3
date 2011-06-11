@@ -9,14 +9,12 @@ module Thrust::Development
       java.io.File.new File.join(Rails.root, 'tmp')
     end
 
-    def enforce_api_deadlines
-      false
+    def current_app_id
+      'some-app'
     end
 
-    def delegate!
-      proxy = com.google.appengine.tools.development.ApiProxyLocalFactory.new.create self
-
-      ApiProxy.setDelegate proxy
+    def enforce_api_deadlines
+      false
     end
   end
 end
