@@ -34,6 +34,8 @@ class Thrust::Datastore
 
     def save
       connection.put kind, attributes
+
+      true
     end
 
     def kind
