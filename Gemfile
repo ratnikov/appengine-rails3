@@ -4,6 +4,7 @@ gem 'rails', '3.0.7'
 gem 'arel', '2.0.9'
 
 group :development, :test do
+  gem 'jruby-openssl'
   gem 'rake', '0.8.7'
   gem 'warbler'
   gem 'capybara'

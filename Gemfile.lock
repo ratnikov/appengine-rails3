@@ -29,6 +29,7 @@ GEM
       activesupport (= 3.0.7)
     activesupport (3.0.7)
     arel (2.0.9)
+    bouncy-castle-java (1.5.0146.1)
     builder (2.1.2)
     capybara (0.4.1.2)
       celerity (>= 0.7.9)
@@ -62,6 +63,8 @@ GEM
       term-ansicolor (~> 1.0.5)
     i18n (0.5.0)
     jruby-jars (1.6.2)
+    jruby-openssl (0.7.4)
+      bouncy-castle-java
     jruby-rack (1.0.9)
     json (1.4.6-java)
     json_pure (1.5.1)
@@ -136,6 +139,7 @@ DEPENDENCIES
   capybara
   cucumber-rails
   database_cleaner
+  jruby-openssl
   rails (= 3.0.7)
   rake (= 0.8.7)
   rspec
