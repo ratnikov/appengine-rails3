@@ -6,3 +6,9 @@ Given /^I am logged in as "(.*)"$/ do |email|
   fill_in 'email', :with => email
   click_button 'Log in!'
 end
+
+Given /^I log out$/ do
+  visit '/'
+
+  click_link 'logout'
+end

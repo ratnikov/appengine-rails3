@@ -2,12 +2,14 @@
 
 <p>View code at <%= link_to 'Github', 'http://github.com/ratnikov/appengine-rails3' %>.</p>
 
-<h2>Leave a comment!</h3>
+<% if logged_in? -%>
+  <h2>Leave a comment!</h3>
 
-<%= form_for Comment.new do |f| -%>
-  <p>
-  <%= f.label :text %>: <%= f.text_field :text %>
-  </p>
+  <%= form_for Comment.new do |f| -%>
+    <p>
+    <%= f.label :text %>: <%= f.text_field :text %>
+    </p>
 
-  <p><%= f.submit 'Post comment' %></p>
-<% end %>
+    <p><%= f.submit 'Post comment' %></p>
+  <% end %>
+<% end -%>
