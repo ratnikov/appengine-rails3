@@ -1,29 +1,24 @@
 require 'spec_helper'
 
 describe Thrust::Datastore do
-  before { @datastore = Thrust::Datastore.new 'test-objects' }
+  before { @datastore = Thrust::Datastore.new }
 
   describe "#get" do
     it "should allow looking up by key" do
-      key = @datastore.put :foo => 'bar'
+      key = @datastore.create 'tests', :foo => 'bar'
 
       @datastore.get(key).should == { 'foo' => 'bar' }
     end
 
-    it "should allow looking up by numeric id" do
-      id = @datastore.put(:foo => 'bar').id
-
-      @datastore.get(id).should == { 'foo' => 'bar' }
-    end
-
     it "should throw 'RecordNotFound' exception for invalid key" do
-      lambda { @datastore.get(123124) }.should raise_error(Thrust::Datastore::RecordNotFound)
+      key = @datastore.create_key 'foos', 42
+      lambda { @datastore.get(key) }.should raise_error(Thrust::Datastore::RecordNotFound)
     end
   end
 
-  describe "#put" do
-    it "return key of created entry" do
-      key = @datastore.put :foo => 'bar'
+  describe "#create" do
+    it "return key for entity created" do
+      key = @datastore.create 'tests', 'foo' => 'bar'
 
       key.should_not be_nil
 
@@ -31,33 +26,26 @@ describe Thrust::Datastore do
     end
   end
 
-  describe "#exists?" do
-    before { @key = @datastore.put 'foo' => 'bar' }
-    it "should support existance by key" do
-      @datastore.exists?(@key).should be_true
+  describe "#query" do
+    before do
+      @foo_key = @datastore.create 'tests', 'foo' => 'bar'
+      @bar_key = @datastore.create 'tests', 'bar' => 'baz'
+
+      @other_foo_key = @datastore.create 'others', 'foo' => 'bar'
     end
 
-    it "should support existance by id" do
-      @datastore.exists?(@key.get_id).should be_true
-
-      @datastore.exists?(123123).should be_false
+    it "should support querying by key" do
+      @datastore.query(:key => @key).map(&:key).should == [ @foo_key ]
     end
 
     it "should support existance by properties hash" do
-      @datastore.exists?('foo' => 'bar').should be_true
-
-      @datastore.exists?('foo' => 'baz').should be_false
-      @datastore.exists?('foo' => 'bar', 'baz' => 'zeta').should be_false
+      @datastore.query('foo' => 'bar', :kind => 'tests').should_not be_blank
+      @datastore.query('foo' => 'bar', 'baz' => 'zeta', :kind => 'tests').should be_blank
     end
-  end
 
-  it "should use different 'kinds' for datastore instances" do
-    foo_store = Thrust::Datastore.new 'foo'
-    bar_store = Thrust::Datastore.new 'bar'
-
-    id = foo_store.put('foo' => 'bar').get_id
-
-    foo_store.exists?(id).should be_true
-    bar_store.exists?(id).should be_false
+    it "should filter based on kind" do
+      @datastore.query('foo' => 'bar', :kind => 'tests').map(&:key).should == [ @foo_key ]
+      @datastore.query('foo' => 'bar', :kind => 'others').map(&:keys).should == [ @other_foo_key ]
+    end
   end
 end
