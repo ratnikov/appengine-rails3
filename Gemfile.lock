@@ -51,6 +51,7 @@ GEM
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
     culerity (0.2.15)
+    database_cleaner (0.6.7)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -134,6 +135,7 @@ DEPENDENCIES
   arel (= 2.0.9)
   capybara
   cucumber-rails
+  database_cleaner
   rails (= 3.0.7)
   rake (= 0.8.7)
   rspec

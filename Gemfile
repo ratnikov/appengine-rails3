@@ -10,6 +10,7 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'cucumber-rails'
+  gem 'database_cleaner'
 end
 
 # Bundle edge Rails instead:
