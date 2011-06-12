@@ -1,12 +1,11 @@
 Feature: In order to foster community, people should be able to leave comments.
 
-  @wip
   Scenario: Non-logged in visitor should see comments, but no form
     Given user "joe@example.com" creates a "My first comment" comment
       And I am on the home page
 
      Then I should see "My first comment"
-      And I should see "by joe"
+      And I should see "Joe wrote"
       And I should not see "example.com"
 
       And I should not see "Leave a comment"

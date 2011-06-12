@@ -3,7 +3,7 @@
 <h2>Posted comments</h2>
 
 <% Comment.all.each do |comment| -%>
-  <p><%= comment.text %></p>
+  <p><%= author_name comment %> wrote: <%= comment.text %></p>
 <% end -%>
 
 <% if logged_in? -%>
