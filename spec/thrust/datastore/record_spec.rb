@@ -38,6 +38,6 @@ describe Thrust::Datastore::Record do
   end
 
   it "should return lower-cased class name as model name" do
-    Foo.model_name.should == 'foo'
+    Foo.model_name.should == 'Foo'
   end
 end
