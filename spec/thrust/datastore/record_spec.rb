@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Thrust::Datastore::Record do
   class Foo < Thrust::Datastore::Record
+    property :defined_property
   end
 
   it "should allow creating records" do
@@ -18,6 +19,21 @@ describe Thrust::Datastore::Record do
   context "#find" do
     it "should raise error when called with nil id" do
       lambda { Foo.find(nil) }.should raise_error(Thrust::Datastore::RecordNotFound, /without.*id/i)
+    end
+  end
+
+  context "defined properties" do
+    it "should return nil by default" do
+      Foo.new.defined_property.should == nil
+    end
+
+    it "should allow assigning to it" do
+      foo = Foo.new
+
+      foo.defined_property = 'bar'
+
+      foo.defined_property.should == 'bar'
+      foo.attributes[:defined_property].should == 'bar'
     end
   end
 
