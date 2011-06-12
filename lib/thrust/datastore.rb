@@ -47,6 +47,10 @@ class Thrust::Datastore
     QueryResult.new datastore.prepare(query)
   end
 
+  def delete(key)
+    datastore.delete key
+  end
+
   def create_key(kind, id)
     KeyFactory.create_key kind, id
   end

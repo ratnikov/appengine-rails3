@@ -26,6 +26,16 @@ describe Thrust::Datastore do
     end
   end
 
+  describe "#delete" do
+    it "should remove the entity from datastore" do
+      key = @datastore.create 'tests', 'foo' => 'bar'
+
+      @datastore.delete(key)
+
+      @datastore.query(:key => key).should be_blank
+    end
+  end
+
   describe "#query" do
     before do
       @foo_key = @datastore.create 'tests', 'foo' => 'bar'
