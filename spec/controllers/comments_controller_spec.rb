@@ -14,6 +14,7 @@ describe CommentsController do
       end
 
       it "should remember the user who created it" do
+        Comment.all(:text => 'Hello world!').first.user.email.should == 'joe@example.com'
       end
 
       it { response.should be_redirect }
