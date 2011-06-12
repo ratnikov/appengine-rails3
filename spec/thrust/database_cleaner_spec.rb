@@ -4,8 +4,8 @@ describe DatabaseCleaner::Datastore do
   before { @datastore = Thrust::Datastore.new }
 
   it "should clean database entries", :clean => false do
-    @datastore.create 'foos', 'foo' => 'bar'
-    @datastore.create 'bars', 'foo' => 'bar'
+    @datastore.put 'foos', 'foo' => 'bar'
+    @datastore.put 'bars', 'foo' => 'bar'
 
     @datastore.query(:kind => 'foos').should_not be_empty
 
