@@ -6,8 +6,6 @@ require 'thrust'
 
 require 'capybara/rspec'
 
-require 'thrust/database_cleaner'
-
 DatabaseCleaner[:datastore].strategy = :truncation
 
 RSpec.configure do |config|
