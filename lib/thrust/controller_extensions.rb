@@ -32,6 +32,10 @@ module Thrust
 
     private
 
+    def authenticate
+      redirect_to login_url(url_for) unless logged_in?
+    end
+
     def user_service
       @user_service ||= com.google.appengine.api.users.UserServiceFactory.getUserService
 
