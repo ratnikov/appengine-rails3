@@ -5,7 +5,7 @@ describe Thrust::Datastore do
 
   describe "#get" do
     it "should allow looking up by key" do
-      key = @datastore.create 'tests', :foo => 'bar'
+      key = @datastore.put 'tests', :foo => 'bar'
 
       @datastore.get(key).should == { 'foo' => 'bar' }
     end
@@ -16,19 +16,29 @@ describe Thrust::Datastore do
     end
   end
 
-  describe "#create" do
-    it "return key for entity created" do
-      key = @datastore.create 'tests', 'foo' => 'bar'
+  describe "#put" do
+    it "should create entry if kind is passed" do
+      key = @datastore.put 'tests', 'foo' => 'bar'
 
       key.should_not be_nil
 
       @datastore.get(key).should == { 'foo' => 'bar' }
     end
+
+    it "should update properties of the entity if key is passed" do
+      key = @datastore.put 'tests', 'foo ' => 'bar'
+
+      @datastore.put key, 'foo' => 'baz'
+
+      @datastore.get(key).should == { 'foo' => 'baz' }
+
+      @datastore.query(:kind => 'tests').count.should == 1
+    end
   end
 
   describe "#delete" do
     it "should remove the entity from datastore" do
-      key = @datastore.create 'tests', 'foo' => 'bar'
+      key = @datastore.put 'tests', 'foo' => 'bar'
 
       @datastore.delete(key)
 
@@ -38,10 +48,10 @@ describe Thrust::Datastore do
 
   describe "#query" do
     before do
-      @foo_key = @datastore.create 'tests', 'foo' => 'bar'
-      @bar_key = @datastore.create 'tests', 'bar' => 'baz'
+      @foo_key = @datastore.put 'tests', 'foo' => 'bar'
+      @bar_key = @datastore.put 'tests', 'bar' => 'baz'
 
-      @other_foo_key = @datastore.create 'others', 'foo' => 'bar'
+      @other_foo_key = @datastore.put 'others', 'foo' => 'bar'
     end
 
     it "should support querying by key" do

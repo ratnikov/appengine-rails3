@@ -29,8 +29,8 @@ class Thrust::Datastore
     datastore.get(key).properties
   end
 
-  def create(kind, attributes)
-    entity = Entity.new kind
+  def put(kind_or_key, attributes)
+    entity = Entity.new kind_or_key
 
     attributes.each { |(k, v)| entity.set_property k, v }
 
@@ -67,3 +67,5 @@ class Thrust::Datastore
     @datastore
   end
 end
+
+require 'thrust/datastore/record'
