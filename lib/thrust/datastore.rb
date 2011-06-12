@@ -17,6 +17,10 @@ class Thrust::Datastore
     def count
       result.count_entities
     end
+
+    def empty?
+      count == 0
+    end
   end
 
   class RecordNotFound < EntityNotFoundException; end
