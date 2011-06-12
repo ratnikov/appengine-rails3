@@ -67,6 +67,10 @@ class Thrust::Datastore
       end
     end
 
+    def persisted?
+      !!primary_id
+    end
+
     def new_record?
       ! primary_id
     end

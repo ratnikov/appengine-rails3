@@ -10,6 +10,7 @@ describe Thrust::Datastore::Record do
     foo.save.should be_true
 
     foo.new_record?.should be_false
+    foo.persisted?.should be_true
 
     Foo.find(foo).should == foo
   end
