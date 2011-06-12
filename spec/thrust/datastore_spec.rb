@@ -45,7 +45,7 @@ describe Thrust::Datastore do
     end
 
     it "should support querying by key" do
-      @datastore.query(:key => @key).map(&:key).should == [ @foo_key ]
+      @datastore.query(:key => @foo_key).map(&:key).should == [ @foo_key ]
     end
 
     it "should support existance by properties hash" do
@@ -55,7 +55,7 @@ describe Thrust::Datastore do
 
     it "should filter based on kind" do
       @datastore.query('foo' => 'bar', :kind => 'tests').map(&:key).should == [ @foo_key ]
-      @datastore.query('foo' => 'bar', :kind => 'others').map(&:keys).should == [ @other_foo_key ]
+      @datastore.query('foo' => 'bar', :kind => 'others').map(&:key).should == [ @other_foo_key ]
     end
   end
 end
