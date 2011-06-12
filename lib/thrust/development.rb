@@ -30,15 +30,18 @@ module Thrust::Development
 
   def engaged!
     @environment = Environment.new
+    local_proxy = ApiProxyLocalFactory.new.create(ServerEnvironment.new)
 
     begin
-      ApiProxy.setDelegate ApiProxyLocalFactory.new.create(ServerEnvironment.new)
+      ApiProxy.setDelegate local_proxy
       ApiProxy.set_environment_for_current_thread @environment
 
       yield
     ensure
       ApiProxy.clear_environment_for_current_thread
+      ApiProxy.setDelegate nil
 
+      local_proxy.stop
       @environment = nil
     end
   end
