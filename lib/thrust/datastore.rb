@@ -27,6 +27,9 @@ class Thrust::Datastore
 
   def get(key)
     datastore.get(key).properties
+  rescue EntityNotFoundException => error
+    key = error.cause.key
+    raise RecordNotFound, "Could not find record with ID=#{key.get_id}, KIND=#{key.kind}"
   end
 
   def put(kind_or_key, attributes)

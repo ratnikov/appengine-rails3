@@ -12,7 +12,7 @@ describe Thrust::Datastore do
 
     it "should throw 'RecordNotFound' exception for invalid key" do
       key = @datastore.create_key 'foos', 42
-      lambda { @datastore.get(key) }.should raise_error(Thrust::Datastore::RecordNotFound)
+      lambda { @datastore.get(key) }.should raise_error(Thrust::Datastore::RecordNotFound, /42.*foos/)
     end
   end
 
