@@ -1,5 +1,11 @@
 <h1>Hello world!</h1>
 
+<h2>Posted comments</h2>
+
+<% Comment.all.each do |comment| -%>
+  <p><%= comment.text %></p>
+<% end -%>
+
 <p>View code at <%= link_to 'Github', 'http://github.com/ratnikov/appengine-rails3' %>.</p>
 
 <% if logged_in? -%>

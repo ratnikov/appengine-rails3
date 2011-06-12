@@ -1,9 +1,10 @@
 Feature: In order to foster community, people should be able to leave comments.
+
   Scenario: Non-logged in visitor should see comments, but no form
-    Given user "joe@example.com" creates a "Hello world" comment
+    Given user "joe@example.com" creates a "My first comment" comment
     Given I am on the home page
 
-     Then I should see "Hello world"
+     Then I should see "My first comment"
      Then I should not see "Leave a comment"
 
   Scenario: User leaving comments
