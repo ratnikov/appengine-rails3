@@ -16,6 +16,21 @@ describe Thrust::Datastore::Record do
     Foo.find(foo).should == foo
   end
 
+  context "#all" do
+    before do
+      @one = Foo.create! :foo => 'bar'
+      @two = Foo.create! :foo => 'baz'
+    end
+
+    it "should return all records of this kind" do
+      Foo.all.should == [ @one, @two ]
+    end
+
+    it "should allow filtering" do
+      Foo.all(:foo => 'bar').should == [ @one ]
+    end
+  end
+
   context "#find" do
     it "should raise error when called with nil id" do
       lambda { Foo.find(nil) }.should raise_error(Thrust::Datastore::RecordNotFound, /without.*id/i)

@@ -39,7 +39,7 @@ class Thrust::Datastore
       end
 
       def all(properties = {})
-        query(properties).map { |entity| existing_record entitiy.key, entity.properties }
+        query(properties).map { |entity| existing_record entity.key, entity.properties }
       end
 
       def find(record_or_id)
