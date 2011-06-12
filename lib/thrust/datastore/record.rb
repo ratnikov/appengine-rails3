@@ -15,8 +15,20 @@ class Thrust::Datastore
         @connection
       end
 
+      def all(properties = {})
+        query(properties).map { |entity| new entity.properties.merge(:key => entity.key) }
+      end
+
       def exists?(properties)
-        connection.query properties.merge(:kind => kind)
+        query(properties).any?
+      end
+
+      private
+
+      def query(properties = nil)
+        filters = properties.nil? ? { :kind => kind } : properties.merge(:kind => kind)
+
+        connection.query filters
       end
     end
 
