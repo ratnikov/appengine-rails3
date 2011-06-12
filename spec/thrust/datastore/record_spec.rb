@@ -9,6 +9,18 @@ describe Thrust::Datastore::Record do
 
     foo.save.should be_true
 
-    Foo.exists?(:foo => 'bar').should be_true
+    foo.new_record?.should be_false
+
+    Foo.find(foo.id).should == foo
+  end
+
+  context "#find" do
+    it "should raise error when called with nil id" do
+      lambda { Foo.find(nil) }.should raise_error(Thrust::Datastore::RecordNotFound, /without.*id/i)
+    end
+  end
+
+  it "should return lower-cased class name as model name" do
+    Foo.model_name.should == 'foo'
   end
 end

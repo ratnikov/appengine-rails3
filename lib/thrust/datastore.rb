@@ -23,7 +23,7 @@ class Thrust::Datastore
     end
   end
 
-  class RecordNotFound < EntityNotFoundException; end
+  class RecordNotFound < StandardError; end
 
   def get(key)
     datastore.get(key).properties
