@@ -1,9 +1,5 @@
 module HomesHelper
-  def author_name(comment)
-    if user = comment.user
-      user.nickname.gsub(/@.*$/, '').humanize
-    else
-      'Someone'
-    end
+  def user_name(user)
+    user.nickname.gsub(/@.*$/, '').humanize
   end
 end

@@ -3,7 +3,7 @@
 <h2>Posted comments</h2>
 
 <% Comment.all.each do |comment| -%>
-  <p><%= author_name comment %> wrote: <%= comment.text %></p>
+  <p><%= comment.user ? user_name(comment.user) : 'Someone' %> wrote: <%= comment.text %></p>
 <% end -%>
 
 <% if logged_in? -%>
@@ -11,7 +11,7 @@
 
   <%= form_for Comment.new do |f| -%>
     <p>
-    <%= f.label :text %>: <%= f.text_field :text %>
+    <%= f.label :text %>: <%= f.text_field :text %> (Your name will show up as '<%= user_name current_user %>')
     </p>
 
     <p><%= f.submit 'Post comment' %></p>
