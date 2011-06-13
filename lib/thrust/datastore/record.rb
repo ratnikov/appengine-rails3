@@ -1,14 +1,16 @@
 require 'thrust/datastore/attribute_methods'
 require 'thrust/datastore/connection'
+require 'thrust/datastore/timestamps'
 
 require 'active_model'
 
 module Thrust::Datastore
   class Record
-    include AttributeMethods
     extend ActiveModel::Naming, ActiveModel::Callbacks
 
     define_model_callbacks :create, :update, :save
+
+    include AttributeMethods, Timestamps
 
     class << self
       def property(*properties)
