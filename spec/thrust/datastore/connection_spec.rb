@@ -67,5 +67,39 @@ describe Thrust::Datastore::Connection do
       @datastore.query('foo' => 'bar', :kind => 'tests').map(&:key).should == [ @foo_key ]
       @datastore.query('foo' => 'bar', :kind => 'others').map(&:key).should == [ @other_foo_key ]
     end
+
+    describe "sorting" do
+      before do
+        @datastore.put 'sorted', :number => 1, :letter => 'a'
+        @datastore.put 'sorted', :number => 42, :letter => 'c'
+        @datastore.put 'sorted', :number => 13, :letter => 'b'
+      end
+
+      it "should allow ascending sort" do
+        @datastore.query(:kind => 'sorted', :sort => :number).map { |e| e.get_property :number }.should == [ 1, 13, 42 ]
+        @datastore.query(:kind => 'sorted', :sort => 'number ASC').map { |e| e.get_property :number }.should == [ 1, 13, 42 ]
+        @datastore.query(:kind => 'sorted', :sort => { :number => :asc }).map { |e| e.get_property :number }.should == [ 1, 13, 42 ]
+      end
+
+      it "should allow descending sort" do
+        @datastore.query(:kind => 'sorted', :sort => 'number DESC').map { |e| e.get_property :number }.should == [ 42, 13, 1 ]
+        @datastore.query(:kind => 'sorted', :sort => { :number => :desc }).map { |e| e.get_property :number }.should == [ 42, 13, 1]
+      end
+
+      it "should support sorting by key" do
+        entry_keys = @datastore.query(:kind => 'sorted').map { |e| e.get_key }
+
+        @datastore.query(:kind => 'sorted', :sort => :key).map { |e| e.get_key }.should == entry_keys.sort
+        @datastore.query(:kind => 'sorted', :sort => "key DESC").map { |e| e.get_key }.should == entry_keys.sort.reverse
+      end
+
+      it "should allow multiple sorts" do
+        @datastore.put 'sorted', :number => 45, :letter => '0'
+        @datastore.put 'sorted', :number => 45, :letter => '1'
+
+        @datastore.query(:kind => 'sorted', :sort => [ :number, 'letter DESC' ]).map { |e| e.get_property :letter }.should == [ 'a', 'b', 'c', '1', '0' ]
+        @datastore.query(:kind => 'sorted', :sort => [ :number, { :letter => :asc } ]).map { |e| e.get_property :letter }.should == [ 'a', 'b', 'c', '0', '1' ]
+      end
+    end
   end
 end

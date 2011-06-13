@@ -27,9 +27,12 @@ module Thrust::Datastore
         options[Entity::KEY_RESERVED_PROPERTY] = key
       end
 
+      sort = options.delete(:sort)
+
       query = kind.nil? ? Query.new : Query.new(kind)
 
-      options.each { |(k, v)| query.add_filter k, Query::FilterOperator::EQUAL, v }
+      apply_options query, options
+      apply_sorts query, sort
 
       QueryResult.new datastore.prepare(query)
     end
@@ -43,6 +46,31 @@ module Thrust::Datastore
     end
 
     private
+
+    def apply_options(query, options)
+      options.each { |(k, v)| query.add_filter k, Query::FilterOperator::EQUAL, v }
+    end
+
+    def apply_sorts(query, sorts)
+      return if sorts.nil?
+
+      case sorts
+      when Array then sorts.each { |sort| apply_sorts query, sort }
+      when Hash
+        sorts.each { |(field, direction)| apply_sort query, field.to_s, direction != :desc }
+      when /(\w+) ASC/ then apply_sort query, $1, true
+      when /(\w+) DESC/ then apply_sort query, $1, false
+      else
+        apply_sort query, sorts.to_s
+      end
+    end
+
+    def apply_sort(query, sort_by, ascending = true)
+      attribute = sort_by == 'key' ? Entity::KEY_RESERVED_PROPERTY : sort_by
+      direction = ascending ? Query::SortDirection::ASCENDING : Query::SortDirection::DESCENDING
+
+      query.add_sort attribute, direction
+    end
 
     def datastore
       @datastore ||= DatastoreServiceFactory.datastore_service
