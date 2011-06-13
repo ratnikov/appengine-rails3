@@ -1,5 +1,5 @@
 module HomesHelper
   def user_name(user)
-    user.nickname.gsub(/@.*$/, '').humanize
+    user.nickname.gsub(/@.*$/, '')
   end
 end
