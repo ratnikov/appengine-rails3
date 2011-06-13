@@ -68,6 +68,12 @@ describe Thrust::Datastore::Connection do
       @datastore.query('foo' => 'bar', :kind => 'others').map(&:key).should == [ @other_foo_key ]
     end
 
+    it "should support filtering by nil" do
+      nil_foo = @datastore.put 'tests', 'foo' => nil
+
+      @datastore.query('foo' => nil, :kind => 'tests').map(&:key).should == [ nil_foo ]
+    end
+
     describe "sorting" do
       before do
         @datastore.put 'sorted', :number => 1, :letter => 'a'
