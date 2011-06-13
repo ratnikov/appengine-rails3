@@ -2,8 +2,11 @@
 
 <h2>Posted comments</h2>
 
-<% (Comment.all(:sort => :created_at) + Comment.all(:created_at => nil).each do |comment| -%>
-  <p><%= comment.user ? user_name(comment.user) : 'Someone' %> wrote: <%= comment.text %></p>
+<% (Comment.all(:sort => :created_at) + Comment.all(:created_at => nil)).each do |comment| -%>
+  <p>
+  <%= comment.user ? user_name(comment.user) : 'Someone' %> wrote: <%= comment.text %>
+  <%= "(%s ago)" % time_ago_in_words(comment.created_at) unless comment.created_at.nil? %>
+  </p>
 <% end -%>
 
 <% if logged_in? -%>
