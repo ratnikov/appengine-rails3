@@ -16,10 +16,10 @@ describe Thrust::Datastore::Record do
     Foo.find(foo).should == foo
   end
 
-  context "#all" do
+  describe "#all" do
     before do
-      @one = Foo.create! :foo => 'bar'
-      @two = Foo.create! :foo => 'baz'
+      @one = Foo.create :foo => 'bar'
+      @two = Foo.create :foo => 'baz'
     end
 
     it "should return all records of this kind" do
@@ -31,13 +31,13 @@ describe Thrust::Datastore::Record do
     end
   end
 
-  context "#find" do
+  describe "#find" do
     it "should raise error when called with nil id" do
       lambda { Foo.find(nil) }.should raise_error(Thrust::Datastore::RecordNotFound, /without.*id/i)
     end
   end
 
-  context "defined properties" do
+  describe "#property" do
     it "should return nil by default" do
       Foo.new.defined_property.should == nil
     end

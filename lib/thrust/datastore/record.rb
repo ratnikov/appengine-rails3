@@ -33,7 +33,7 @@ module Thrust::Datastore
         @connection
       end
 
-      def create!(*args)
+      def create(*args)
         record = new(*args)
 
         record.save ?  record : nil
