@@ -2,7 +2,7 @@
 
 <h2>Posted comments</h2>
 
-<% Comment.all(:sort => :created_at).each do |comment| -%>
+<% (Comment.all(:sort => :created_at) + Comment.all(:created_at => nil).each do |comment| -%>
   <p><%= comment.user ? user_name(comment.user) : 'Someone' %> wrote: <%= comment.text %></p>
 <% end -%>
 
