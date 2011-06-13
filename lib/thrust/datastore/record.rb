@@ -6,7 +6,9 @@ require 'active_model'
 module Thrust::Datastore
   class Record
     include AttributeMethods
-    extend ActiveModel::Naming
+    extend ActiveModel::Naming, ActiveModel::Callbacks
+
+    define_model_callbacks :create, :update, :save
 
     class << self
       def property(*properties)
@@ -99,11 +101,17 @@ module Thrust::Datastore
     end
 
     def save
-      key = connection.put kind, attributes
+      todo = proc do
+        _run_save_callbacks do
+          key = connection.put kind, attributes
 
-      set_primary_id key.get_id
+          set_primary_id key.get_id
 
-      true
+          true
+        end
+      end
+
+      new_record? ? _run_create_callbacks(&todo) : _run_update_callbacks(&todo)
     end
 
     def kind

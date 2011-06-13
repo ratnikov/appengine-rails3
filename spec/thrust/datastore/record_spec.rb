@@ -3,6 +3,32 @@ require 'spec_helper'
 describe Thrust::Datastore::Record do
   class Foo < Thrust::Datastore::Record
     property :defined_property
+
+    before_create :on_before_create
+    before_update :on_before_update
+    before_save :on_before_save
+
+    after_create :on_after_create
+    after_update :on_after_update
+    after_save :on_after_save
+
+    def callbacks
+      @callbacks ||= []
+
+      @callbacks
+    end
+
+    private
+
+    [ :on_before_create, :on_before_update, :on_before_save,
+      :on_after_create, :on_after_update, :on_after_save ].each do |callback|
+
+      attr_reader callback
+
+      define_method callback do
+        callbacks.push callback
+      end
+    end
   end
 
   it "should allow creating records" do
@@ -49,6 +75,26 @@ describe Thrust::Datastore::Record do
 
       foo.defined_property.should == 'bar'
       foo.attributes[:defined_property].should == 'bar'
+    end
+  end
+
+  describe "callbacks" do
+    it "creating a record should invoke create and save callbacks" do
+      foo = Foo.new
+
+      foo.save
+
+      foo.callbacks.should == [ :on_before_create, :on_before_save, :on_after_save, :on_after_create ]
+    end
+
+    it "updating a record should invoke update and save callbacks" do
+      foo = Foo.create
+
+      foo.callbacks.clear
+
+      foo.save
+
+      foo.callbacks.should == [ :on_before_update, :on_before_save, :on_after_save, :on_after_update ]
     end
   end
 
