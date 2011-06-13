@@ -66,7 +66,17 @@ module Thrust::Datastore
       private
 
       def existing_record datastore_key, properties
-        record = new properties
+        record = new
+
+        properties.each do |(key, value)|
+          clean_value = case value
+          when java.util.Date then Time.at(value.time / 1000)
+          else
+            value
+          end
+
+          record.write_attribute key, clean_value
+        end
 
         record.set_primary_id(datastore_key.get_id)
 

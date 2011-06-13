@@ -30,6 +30,16 @@ describe Thrust::Datastore::Record do
       end
     end
   end
+  
+  describe "attributes" do
+    it "should return timestamps that behave as ruby time objects" do
+      one = Foo.create :time => now = Time.now
+
+      time = Foo.find(one).time
+
+      (time - 1.second .. time + 1.second).should include(now)
+    end
+  end
 
   it "should allow creating records" do
     foo = Foo.new :foo => 'bar'
