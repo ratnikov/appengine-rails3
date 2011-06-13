@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Thrust::Datastore do
-  before { @datastore = Thrust::Datastore.new }
+describe Thrust::Datastore::Connection do
+  before { @datastore = Thrust::Datastore::Connection.new }
 
   describe "#get" do
     it "should allow looking up by key" do

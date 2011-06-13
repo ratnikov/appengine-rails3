@@ -1,8 +1,9 @@
 require 'thrust/datastore/attribute_methods'
+require 'thrust/datastore/connection'
 
 require 'active_model'
 
-class Thrust::Datastore
+module Thrust::Datastore
   class Record
     include AttributeMethods
     extend ActiveModel::Naming
@@ -27,7 +28,7 @@ class Thrust::Datastore
       end
 
       def connection
-        @connection ||= Thrust::Datastore.new
+        @connection ||= Connection.new
 
         @connection
       end
