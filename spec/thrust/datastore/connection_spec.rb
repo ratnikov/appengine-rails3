@@ -70,8 +70,13 @@ describe Thrust::Datastore::Connection do
 
     it "should support filtering by nil" do
       nil_foo = @datastore.put 'tests', 'foo' => nil
+      unset_foo = @datastore.put 'tests', { }
 
-      @datastore.query('foo' => nil, :kind => 'tests').map(&:key).should == [ nil_foo ]
+
+      returned_keys =@datastore.query('foo' => nil, :kind => 'tests').map(&:key)
+      
+      returned_keys.should include(nil_foo)
+      returned_keys.should_not include(unset_foo)
     end
 
     describe "sorting" do
