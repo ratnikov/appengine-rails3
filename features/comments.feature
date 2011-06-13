@@ -10,6 +10,13 @@ Feature: In order to foster community, people should be able to leave comments.
 
       And I should not see "Leave a comment"
 
+  Scenario: Should support legacy comments lacking timestamps
+    Given someone left "anonymous comment" comment without timestamps
+
+     When I am on the home page
+
+     Then I should see "anonymous comment"
+
   Scenario: User leaving comments
     Given I am logged in as "joe@example.com"
       And I am on the home page

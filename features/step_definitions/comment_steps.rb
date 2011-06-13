@@ -1,3 +1,7 @@
+Given /someone left "(.*)" comment without timestamps$/ do |text|
+  Comment.connection.put Comment.kind, :text => text
+end
+
 Given /^user "(.*)" creates a "(.*)" comment$/ do |email, text|
   When %{I am logged in as "#{email}"}
 
