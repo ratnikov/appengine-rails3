@@ -14,20 +14,6 @@ module Thrust::Datastore
     include ActiveModel::Validations::Callbacks, ActiveModel::Validations
 
     class << self
-      def property(*properties)
-        properties.each do |property|
-          class_eval <<-ENV
-          def #{property}
-            read_attribute :#{property}
-          end
-
-          def #{property}=(value)
-            write_attribute :#{property}, value
-          end
-          ENV
-        end
-      end
-
       def kind
         name
       end

@@ -1,4 +1,20 @@
 module Thrust::Datastore::AttributeMethods
+  extend ActiveSupport::Concern
+
+  module ClassMethods
+    def property(*properties)
+      properties.each do |property|
+        define_method property do
+          read_attribute property
+        end
+
+        define_method "#{property}=" do |value|
+          write_attribute property, value
+        end
+      end
+    end
+  end
+
   attr_reader :attributes
 
   def initialize(attributes = nil)

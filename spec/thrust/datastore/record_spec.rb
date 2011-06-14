@@ -73,21 +73,6 @@ describe Thrust::Datastore::Record do
     end
   end
 
-  describe "#property" do
-    it "should return nil by default" do
-      Foo.new.defined_property.should == nil
-    end
-
-    it "should allow assigning to it" do
-      foo = Foo.new
-
-      foo.defined_property = 'bar'
-
-      foo.defined_property.should == 'bar'
-      foo.attributes[:defined_property].should == 'bar'
-    end
-  end
-
   describe "callbacks" do
     it "creating a record should invoke create and save callbacks" do
       foo = Foo.new
