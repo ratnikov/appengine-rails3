@@ -92,7 +92,7 @@ module Thrust::Datastore
       def key_by_id(record_id)
         raise RecordNotFound, "Cannot find #{model_name.human} without ID" if record_id.nil?
 
-        connection.create_key kind, record_id
+        connection.create_key kind, record_id.to_i
       end
     end
 
@@ -106,6 +106,10 @@ module Thrust::Datastore
 
     def primary_id
       @_id
+    end
+
+    def to_param
+      primary_id && primary_id.to_s
     end
 
     def to_key

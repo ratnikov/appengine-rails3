@@ -140,6 +140,22 @@ describe Thrust::Datastore::Record do
     existing.should_not == different_id
   end
 
+  describe "#to_param" do
+    it "should be alpha-numeric" do
+      Foo.create.to_param.should =~ /^\w+$/
+    end
+
+    it "should be nil for new records" do
+      Foo.new.to_param.should be_nil
+    end
+
+    it "should be able to lookup using to_param" do
+      foo = Foo.create :foo => 'bar'
+
+      Foo.find(foo.to_param).should == foo
+    end
+  end
+
   describe "#to_key" do
     it "should return nil for new record" do
       Foo.new.to_key.should == nil
