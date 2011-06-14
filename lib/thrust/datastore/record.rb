@@ -11,6 +11,7 @@ module Thrust::Datastore
     define_model_callbacks :create, :update, :save
 
     include AttributeMethods, Timestamps
+    include ActiveModel::Validations::Callbacks, ActiveModel::Validations
 
     class << self
       def property(*properties)
@@ -113,6 +114,8 @@ module Thrust::Datastore
     end
 
     def save
+      return false unless valid?
+
       todo = proc do
         _run_save_callbacks do
           key = connection.put kind, attributes
