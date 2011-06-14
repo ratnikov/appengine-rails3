@@ -59,6 +59,10 @@ module Thrust::Datastore
         query.any?
       end
 
+      def delete(record)
+        connection.delete key_by_id(record.primary_id)
+      end
+
       private
 
       def existing_record datastore_key, properties
@@ -122,6 +126,14 @@ module Thrust::Datastore
       end
 
       new_record? ? _run_create_callbacks(&todo) : _run_update_callbacks(&todo)
+    end
+
+    def destroy
+      klass.delete(self)
+      
+      freeze
+
+      true
     end
 
     def kind
