@@ -29,6 +29,38 @@ describe CommentsController do
     end
   end
 
+  context "DELETE /destroy" do
+    before { @comment = Comment.create :text => 'Hello world!' }
+
+    context "with logged in admin" do
+      before do
+        login_as 'joe@example.com', :admin => true
+
+        delete :destroy, :id => @comment
+      end
+
+      it("should delete the comment") { Comment.exists?(:text => 'Hello world!').should be_false }
+
+      it { should redirect_to(root_path) }
+    end
+
+    it "should require login" do
+      logout
+
+      delete :destroy, :id => @comment
+
+      response.should be_redirect
+    end
+
+    it "should require being an admin" do
+      login_as 'joe@example.com', :admin => false
+
+      delete :destroy, :id => @comment
+
+      response.should be_forbidden
+    end
+  end
+
   def login_as(email, options = nil)
     admin = options && options[:admin] == true
 
