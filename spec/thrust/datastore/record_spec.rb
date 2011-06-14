@@ -93,6 +93,36 @@ describe Thrust::Datastore::Record do
     end
   end
 
+  describe "#exists?" do
+    before { @foo = Foo.create :foo => 'bar' }
+
+    it("should support attributes hash as parameter") do
+      Foo.exists?(:foo => 'bar').should be_true
+      Foo.exists?(:foo => 'baz').should be_false
+    end
+
+    it "should support id parameter" do
+      Foo.exists?(@foo.primary_id).should be_true
+      Foo.exists?(42).should be_false
+    end
+
+    it "should support a record as parameter" do
+      Foo.exists?(@foo).should be_true
+
+      @foo.destroy
+
+      Foo.exists?(@foo).should be_false
+    end
+  end
+
+  describe "#destroy" do
+    before { @foo = Foo.create :foo => 'bar'; @destroyed = @foo.destroy }
+
+    it("should return true") { @destroyed.should be_true }
+    it("should remove the entry from persistence") { Foo.exists?(@foo).should be_false }
+    it("should freeze the destroyed entry") { @foo.should be_frozen }
+  end
+
   it "should override equality" do
     new_record = Foo.new(:foo => 'bar')
     

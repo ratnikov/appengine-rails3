@@ -46,8 +46,17 @@ module Thrust::Datastore
         existing_record key, connection.get(key)
       end
 
-      def exists?(properties)
-        query(properties).any?
+      def exists?(record_or_hash)
+        query = case record_or_hash
+        when Hash
+          query(record_or_hash)
+        when self
+          query(:key => key_by_id(record_or_hash.primary_id))
+        else
+          query(:key => key_by_id(record_or_hash))
+        end
+
+        query.any?
       end
 
       private
