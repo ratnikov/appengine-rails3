@@ -22,7 +22,7 @@ Feature: In order to foster community, people should be able to leave comments.
     Given user "joe@example.com" creates a "Your mother was a hamster!" comment
       And I am logged in as "joe@example.com" admin
 
-     When I press "Delete" within "//p[contains('Your mother was a hamster!')]"
+      When I press "Delete" within "//div[@class='comment'][contains(string(), 'Your mother was a hamster!')]"
 
      Then I should not see "Your mother was a hamster!"
       And comment "Your mother was a hamser!" should not exist
