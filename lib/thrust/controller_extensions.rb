@@ -15,7 +15,7 @@ module Thrust
     end
 
     def admin?
-      user_service.user_admin?
+      logged_in? && user_service.user_admin?
     end
 
     def logged_in?
