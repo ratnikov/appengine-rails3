@@ -18,3 +18,7 @@ end
 Then /^comment "(.*)" should exist$/ do |text|
   Comment.exists?(:text => text).should be_true
 end
+
+Then /^comment "(.*)" should not exist$/ do |text|
+  Comment.exists?(:text => text).should be_false
+end
