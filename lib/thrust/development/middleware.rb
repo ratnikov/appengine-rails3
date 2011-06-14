@@ -6,8 +6,8 @@ module Thrust::Development
     class Handler
       attr_reader :request
 
-      def initialize(request)
-        @request = request
+      def initialize(thrust_environment, request)
+        @thrust_environment, @request = thrust_environment, request
       end
 
       def run
@@ -56,7 +56,7 @@ module Thrust::Development
       private
 
       def env
-        Thrust::Development.environment
+        @thrust_environment
       end
 
       def redirect_back
@@ -75,9 +75,15 @@ module Thrust::Development
     end
 
     def call(env)
-      Handler.new(::Rack::Request.new(env)).run do
-        Thrust::Development.engaged { @app.call env }
+      Thrust::Development.engaged(environment) do
+        Handler.new(environment, ::Rack::Request.new(env)).run { @app.call env }
       end
+    end
+
+    def environment
+      @environment ||= Environment.new
+
+      @environment
     end
   end
 end

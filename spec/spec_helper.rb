@@ -11,7 +11,11 @@ DatabaseCleaner[:datastore].strategy = :truncation
 RSpec.configure do |config|
   # enable thrust environment except for :thrust => false examples
   config.around do |example| 
-    Thrust::Development.engaged { example.run } unless example.metadata[:thrust] == false
+    unless example.metadata[:engage_thrust] == false
+      Thrust::Development.engaged { example.run }
+    else
+      example.run
+    end
   end
 
   config.after { DatabaseCleaner.clean }

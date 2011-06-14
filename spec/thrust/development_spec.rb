@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'thrust/development'
 
-describe Thrust::Development, :thrust => false do
+describe Thrust::Development, :engage_thrust => false do
   describe "#engaged" do
     it "should setup environment while in the block" do
       Thrust::Development.engaged do

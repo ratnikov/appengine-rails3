@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'thrust/development'
 
-describe Thrust::Development::Middleware, :type => :acceptance do
+describe Thrust::Development::Middleware, :type => :acceptance, :engage_thrust => false do
   class Application
     def call(env)
       [ 200, { 'Content-Type' => 'text/plain' }, [ 'Application OK' ] ]
@@ -13,10 +13,16 @@ describe Thrust::Development::Middleware, :type => :acceptance do
     include Thrust::ControllerExtensions
   end
 
-  before do 
-    Capybara.app = Thrust::Development::Middleware.new Application.new
+  before { @controller = TestController.new }
 
-    @controller = TestController.new
+  # Making the examples run within development engaged mode
+  # to allow things like @controller.login_url to work
+  around do |example|
+    middleware = Thrust::Development::Middleware.new Application.new
+
+    Capybara.app = middleware
+
+    Thrust::Development.engaged(middleware.environment) { example.run }
   end
 
   context "logging in" do

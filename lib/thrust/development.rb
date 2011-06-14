@@ -22,14 +22,14 @@ module Thrust::Development
     !! @environment
   end
 
-  def engaged(&blk)
-    engaged? ? yield : engaged!(&blk)
+  def engaged(environment = Environment.new, &blk)
+    engaged? ? yield : engaged!(environment, &blk)
   end
 
   private
 
-  def engaged!
-    @environment = Environment.new
+  def engaged!(environment)
+    @environment = environment
     local_proxy = ApiProxyLocalFactory.new.create(ServerEnvironment.new)
 
     begin
