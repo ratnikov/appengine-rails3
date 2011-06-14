@@ -17,6 +17,17 @@ Feature: In order to foster community, people should be able to leave comments.
 
      Then I should see "anonymous comment"
 
+  @wip
+  Scenario: An admin should be able to delete comments
+    Given user "joe@example.com" creates a "Your mother was a hamster!" comment
+      And I am logged in as "joe@example.com" admin
+
+     When I press "Delete" within "Your mother was a hamster!" comment
+
+     Then I should not see "Your mother was a hamster!"
+      And comment "Your mother was a hamser!" should not exist
+
+
   Scenario: User leaving comments
     Given I am logged in as "joe@example.com"
       And I am on the home page
