@@ -109,7 +109,7 @@ module Thrust::Datastore
     end
 
     def to_key
-      primary_id
+      new_record? ? nil : [ primary_id ]
     end
 
     def save

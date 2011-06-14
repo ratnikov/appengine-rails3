@@ -140,6 +140,18 @@ describe Thrust::Datastore::Record do
     existing.should_not == different_id
   end
 
+  describe "#to_key" do
+    it "should return nil for new record" do
+      Foo.new.to_key.should == nil
+    end
+
+    it "should return the record primary key as array for existing record" do
+      foo = Foo.create :foo => 'bar'
+
+      foo.to_key.should == [ foo.primary_id ]
+    end
+  end
+
   it "should return lower-cased class name as model name" do
     Foo.model_name.should == 'Foo'
   end
