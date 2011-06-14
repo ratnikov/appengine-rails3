@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Thrust::Datastore do
-  class Foo < Thrust::Datastore::Record
+  class ValidationRecord < Thrust::Datastore::Record
     property :foo
 
     validates_presence_of :foo
@@ -17,25 +17,25 @@ describe Thrust::Datastore do
   end
 
   context "saving an erroneous model" do
-    before { @foo = Foo.new; @saved = @foo.save }
+    before { @record = ValidationRecord.new; @saved = @record.save }
 
     it("should return false") { @saved.should be_false }
 
-    it("should add errors about the attribute") { @foo.errors[:foo].should_not be_blank }
-    it("should not persist the record") { @foo.should_not be_persisted }
+    it("should add errors about the attribute") { @record.errors[:foo].should_not be_blank }
+    it("should not persist the record") { @record.should_not be_persisted }
 
     it("should invoke just validation callbacks") do
-      @foo.callbacks.should == [ 'before-validation-callback', 'after-validation-callback' ]
+      @record.callbacks.should == [ 'before-validation-callback', 'after-validation-callback' ]
     end
   end
 
   context "saving a valid model" do
-    before { @foo = Foo.new :foo => 'bar'; @saved = @foo.save }
+    before { @record = ValidationRecord.new :foo => 'bar'; @saved = @record.save }
 
     it("should return true") { @saved.should be_true }
-    it("should persist the record") { Foo.find(@foo).should == @foo }
+    it("should persist the record") { ValidationRecord.find(@record).should == @record }
     it("should invoke saving callbacks") do
-      @foo.callbacks.should == [ 'before-validation-callback', 'after-validation-callback', 'before-save-callback' ]
+      @record.callbacks.should == [ 'before-validation-callback', 'after-validation-callback', 'before-save-callback' ]
     end
   end
 end
