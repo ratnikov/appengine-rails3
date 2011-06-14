@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe CommentsController do
-  context "#create" do
+  context "POST /create" do
     context "while logged in" do
       before do
-        Thrust::Development.environment.current_email = 'joe@example.com'
+        login_as 'joe@example.com'
 
         post :create, :comment => { :text => 'Hello world!' }
       end
@@ -21,11 +21,22 @@ describe CommentsController do
     end
 
     it "should require being logged in" do
-      Thrust::Development.environment.logged_in?.should be_false
+      logout
 
       post :create, :comment => { :text => 'Hello world!' }
 
       response.should redirect_to(controller.login_url(controller.url_for))
     end
+  end
+
+  def login_as(email, options = nil)
+    admin = options && options[:admin] == true
+
+    Thrust::Development.environment.current_email = email
+    Thrust::Development.environment.admin = admin
+  end
+
+  def logout
+    Thrust::Development.environment.reset!
   end
 end
