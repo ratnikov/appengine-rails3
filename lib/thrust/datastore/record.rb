@@ -8,7 +8,7 @@ module Thrust::Datastore
   class Record
     extend ActiveModel::Naming, ActiveModel::Callbacks
 
-    define_model_callbacks :create, :update, :save
+    define_model_callbacks :create, :update, :save, :destroy
 
     include AttributeMethods, Timestamps
     include ActiveModel::Validations::Callbacks, ActiveModel::Validations
@@ -133,11 +133,13 @@ module Thrust::Datastore
     end
 
     def destroy
-      klass.delete(self)
+      _run_destroy_callbacks do
+        klass.delete(self)
       
-      freeze
+        freeze
 
-      true
+        true
+      end
     end
 
     def kind

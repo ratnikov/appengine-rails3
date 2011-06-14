@@ -7,10 +7,12 @@ describe Thrust::Datastore::Record do
     before_create :on_before_create
     before_update :on_before_update
     before_save :on_before_save
+    before_destroy :on_before_destroy
 
     after_create :on_after_create
     after_update :on_after_update
     after_save :on_after_save
+    after_destroy :on_after_destroy
 
     def callbacks
       @callbacks ||= []
@@ -20,8 +22,8 @@ describe Thrust::Datastore::Record do
 
     private
 
-    [ :on_before_create, :on_before_update, :on_before_save,
-      :on_after_create, :on_after_update, :on_after_save ].each do |callback|
+    [ :on_before_create, :on_before_update, :on_before_save, :on_before_destroy,
+      :on_after_create, :on_after_update, :on_after_save, :on_after_destroy ].each do |callback|
 
       attr_reader callback
 
@@ -90,6 +92,14 @@ describe Thrust::Datastore::Record do
       foo.save
 
       foo.callbacks.should == [ :on_before_update, :on_before_save, :on_after_save, :on_after_update ]
+    end
+
+    it "destroying a record should invoke destroy callbacks" do
+      foo = Foo.create; foo.callbacks.clear
+
+      foo.destroy
+
+      foo.callbacks.should == [ :on_before_destroy, :on_after_destroy ]
     end
   end
 
