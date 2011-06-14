@@ -9,3 +9,4 @@ end
 
 require 'thrust/controller_extensions'
 require 'thrust/datastore'
+require 'thrust/logging'
