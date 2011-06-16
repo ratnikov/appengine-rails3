@@ -7,8 +7,11 @@
     <p>
     <%= comment.user ? user_name(comment.user) : 'Someone' %> wrote: <%= comment.text %>
     <%= "(%s ago)" % time_ago_in_words(comment.created_at) unless comment.created_at.nil? %>
-    <%= form_for comment, :html => { :method => :delete } do |f| -%>
-      <%= f.submit 'Delete' %>
+
+    <% if admin? -%>
+      <%= form_for comment, :html => { :method => :delete } do |f| -%>
+        <%= f.submit 'Delete' %>
+      <% end -%>
     <% end -%>
     </p>
   </div>

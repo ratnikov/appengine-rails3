@@ -1,5 +1,8 @@
 Given /^I am logged in as "(.*)"( admin)?$/ do |email, admin|
-  visit '/'
+  visit "/"
+
+  # make sure we're logged out
+  click_link 'logout' rescue nil
 
   click_link 'login'
 

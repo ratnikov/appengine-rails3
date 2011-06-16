@@ -9,6 +9,7 @@ Feature: In order to foster community, people should be able to leave comments.
       And I should not see "example.com"
 
       And I should not see "Leave a comment"
+      And I should not see "Delete" button
 
   Scenario: Should support legacy comments lacking timestamps
     Given someone left "anonymous comment" comment without timestamps
