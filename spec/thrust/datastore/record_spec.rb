@@ -166,6 +166,14 @@ describe Thrust::Datastore::Record do
     end
   end
 
+  describe "#to_model" do
+    it "should return itself" do
+      foo = Foo.new
+
+      foo.to_model.should equal(foo)
+    end
+  end
+
   describe "#to_key" do
     it "should return nil for new record" do
       Foo.new.to_key.should == nil
@@ -175,6 +183,18 @@ describe Thrust::Datastore::Record do
       foo = Foo.create :foo => 'bar'
 
       foo.to_key.should == [ foo.primary_id ]
+    end
+  end
+
+  describe "#to_param" do
+    it "should return nil for new record" do
+      Foo.new.to_param.should == nil
+    end
+
+    it "should return id for persisted record" do
+      foo = Foo.create :foo => 'bar'
+
+      foo.to_param.should == foo.primary_id.to_s
     end
   end
 

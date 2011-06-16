@@ -11,7 +11,7 @@ module Thrust::Datastore
     define_model_callbacks :create, :update, :save, :destroy
 
     include AttributeMethods, Timestamps
-    include ActiveModel::Validations::Callbacks, ActiveModel::Validations
+    include ActiveModel::Validations::Callbacks, ActiveModel::Validations, ActiveModel::Conversion
 
     class << self
       def kind
@@ -107,13 +107,10 @@ module Thrust::Datastore
     def primary_id
       @_id
     end
+    alias id primary_id
 
     def to_param
       primary_id && primary_id.to_s
-    end
-
-    def to_key
-      new_record? ? nil : [ primary_id ]
     end
 
     def save
