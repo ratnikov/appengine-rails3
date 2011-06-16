@@ -21,10 +21,6 @@
   <h2>Leave a comment!</h3>
 
   <%= form_for Comment.new do |f| -%>
-    <p>
-    <%= f.label :text %>: <%= f.text_field :text %> (Your name will show up as '<%= user_name current_user %>')
-    </p>
-
-    <p><%= f.submit 'Post comment' %></p>
+    <%= render :partial => 'comments/form', :locals => { :form => f } %>
   <% end %>
 <% end -%>

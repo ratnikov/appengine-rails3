@@ -4,6 +4,14 @@ require 'spec_helper'
 require 'thrust/development'
 
 describe Comment do
+  it "should validate text" do
+    comment = Comment.new
+
+    comment.should_not be_valid
+
+    comment.errors[:text].should_not be_blank
+  end
+
   it "should allow saving comments" do
     comment = Comment.new :text => 'Hello world!'
 

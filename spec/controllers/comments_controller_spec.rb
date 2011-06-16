@@ -20,6 +20,15 @@ describe CommentsController do
       it { response.should be_redirect }
     end
 
+    it "should render 'new' action when info is not valid" do
+      login_as 'joe@example.com'
+
+      post :create, :comment => { }
+
+      assigns[:comment].should_not be_nil
+      should render_template('new')
+    end
+
     it "should require being logged in" do
       logout
 

@@ -38,3 +38,16 @@ Feature: In order to foster community, people should be able to leave comments.
       And I press "Post comment"
 
      Then comment "Hello world!" should exist
+
+  Scenario: User trying to leave blank comments
+    Given I am logged in as "joe@example.com"
+      And I am on the home page
+
+     When I press "Post comment"
+
+     Then I should see "Text can't be blank"
+
+     When I fill in "comment[text]" with "Updated text"
+      And I press "Post comment"
+
+     Then comment "Updated text" should exist
