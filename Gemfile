@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
 gem 'arel', '2.0.9'
+gem 'dynamic_form'
 
 group :development, :test do
   gem 'jruby-openssl'

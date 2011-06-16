@@ -54,10 +54,14 @@ GEM
     culerity (0.2.15)
     database_cleaner (0.6.7)
     diff-lcs (1.1.2)
+    dynamic_form (1.1.4)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     ffi (1.0.9)
     ffi (1.0.9-java)
+    gherkin (2.2.9)
+      json (~> 1.4.6)
+      term-ansicolor (~> 1.0.5)
     gherkin (2.2.9-java)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
@@ -66,6 +70,7 @@ GEM
     jruby-openssl (0.7.4)
       bouncy-castle-java
     jruby-rack (1.0.9)
+    json (1.4.6)
     json (1.4.6-java)
     json_pure (1.5.1)
     mail (2.2.19)
@@ -139,6 +144,7 @@ DEPENDENCIES
   capybara
   cucumber-rails
   database_cleaner
+  dynamic_form
   jruby-openssl
   rails (= 3.0.7)
   rake (= 0.8.7)
