@@ -11,39 +11,45 @@ module Thrust::Development
   extend self
 
   def environment
-    if @environment.nil?
-      raise "Environment doesn't seem to be initialized. Are you sure you invoked #{name}#engage ?"
-    end
-
-    @environment
-  end
-
-  def engaged?
-    !! @environment
+    ApiProxy.current_environment
   end
 
   def engaged(environment = Environment.new, &blk)
-    engaged? ? yield : engaged!(environment, &blk)
+    with_environment(environment) { with_proxy { yield } }
   end
 
   private
 
-  def engaged!(environment)
-    @environment = environment
-    local_proxy = ApiProxyLocalFactory.new.create(ServerEnvironment.new)
+  def with_proxy
+    return yield if @proxy # re-use already setup proxy
 
     begin
-      ApiProxy.setDelegate local_proxy
-      ApiProxy.set_environment_for_current_thread @environment
+      @proxy = ApiProxyLocalFactory.new.create ServerEnvironment.new
+
+      ApiProxy.set_delegate @proxy
 
       yield
     ensure
-      ApiProxy.clear_environment_for_current_thread
-      ApiProxy.setDelegate nil
+      @proxy.stop
 
-      local_proxy.stop
-      @environment = nil
+      ApiProxy.set_delegate @proxy = nil
     end
+  end
+
+  def with_environment(env)
+    previous_environments.push ApiProxy.current_environment
+
+    ApiProxy.set_environment_for_current_thread env
+
+    yield
+  ensure
+    ApiProxy.set_environment_for_current_thread previous_environments.pop
+  end
+
+  def previous_environments
+    @environments ||= []
+
+    @environments
   end
 end
 
