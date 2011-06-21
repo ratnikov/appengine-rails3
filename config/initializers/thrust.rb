@@ -1,3 +1,5 @@
 require 'thrust'
 
-Thrust::Logging.use Rails.logger
+Thrust.configure do |c|
+  c.logging = Rails.env.production? ? :java : :rails
+end
