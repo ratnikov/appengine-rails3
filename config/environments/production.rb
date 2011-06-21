@@ -1,3 +1,5 @@
+require 'thrust'
+
 AppengineRails3::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -22,7 +24,7 @@ AppengineRails3::Application.configure do
   # config.log_level = :debug
 
   # Use a different logger for distributed setups
-  # config.logger = SyslogLogger.new
+  config.logger = ::Thrust::Logging::JavaLogger.new
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
