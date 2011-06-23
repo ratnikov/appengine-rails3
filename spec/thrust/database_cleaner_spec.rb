@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe DatabaseCleaner::Datastore do
-  before { @connection = Thrust::Datastore::Connection.new }
+  before { @connection = Thrust::Datastore.connection }
 
   it "should clean database entries" do
     @connection.put 'foos', 'foo' => 'bar'

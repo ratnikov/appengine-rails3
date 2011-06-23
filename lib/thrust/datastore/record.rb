@@ -19,9 +19,7 @@ module Thrust::Datastore
       end
 
       def connection
-        @connection ||= Connection.new
-
-        @connection
+        Thrust::Datastore.connection
       end
 
       def create(*args)

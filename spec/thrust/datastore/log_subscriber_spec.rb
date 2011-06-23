@@ -12,7 +12,7 @@ module Thrust::Datastore
       Thrust.logger = @old_logger
     end
 
-    before { @connection = Connection.new }
+    before { @connection = Thrust::Datastore.connection }
 
     context "#prepare" do
       before do
@@ -82,6 +82,10 @@ module Thrust::Datastore
 
       it("should say what record got deleted") { @debug.should =~ /KEY=\(\d+,tests\)/ }
       it("should show how long query took") { @debug.should =~ /\d+ms/ }
+    end
+
+    it "should initialize runtime for new thread" do
+      Thread.new { Thrust::Datastore::LogSubscriber.runtime.should == 0 }.join
     end
   end
 end
