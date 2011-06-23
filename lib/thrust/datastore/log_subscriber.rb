@@ -1,27 +1,48 @@
 module Thrust::Datastore
   class LogSubscriber < ActiveSupport::LogSubscriber
-    def prepare(event)
+    def self.runtime=(value)
+      Thread.current["thrust_datastore_runtime"] = value
+    end
+
+    def self.runtime
+      Thread.current["thrust_datastore_runtime"] ||= 0
+    end
+
+    def self.reset_runtime
+      rt, self.runtime = runtime, 0
+      rt
+    end
+
+    def self.debug_event(name, &blk)
+      define_method name do |event|
+        self.class.runtime += event.duration
+
+        debug instance_exec(event, &blk)
+      end
+    end
+
+    debug_event :prepare do |event|
       query = event.payload[:query]
 
       filters = query.filter_predicates.map { |predicate| "#{predicate.property_name} #{predicate.operator} #{predicate.value.inspect}" }.join(', ')
 
-      debug "#{log_action "PREPARE QUERY", event.duration} KIND=%s ANCESTOR=%s FILTERS={ %s }" % [ query.kind, log_key(query.ancestor), filters ]
+      "#{log_action "PREPARE QUERY", event.duration} KIND=%s ANCESTOR=%s FILTERS={ %s }" % [ query.kind, log_key(query.ancestor), filters ]
     end
 
-    def get(event)
+    debug_event :get do |event|
       key = event.payload[:key]
 
-      debug "#{log_action "GET", event.duration} KEY=%s" % [ log_key(key) ]
+      "#{log_action "GET", event.duration} KEY=%s" % [ log_key(key) ]
     end
 
-    def put(event)
+    debug_event :put do |event|
       entity = event.payload[:entity]
 
-      debug "#{log_action "PUT", event.duration} KEY=%s KIND=%s PARENT=%s PROPERTIES=%s" % [ log_key(entity.key), entity.kind, log_key(entity.parent), entity.properties.inspect ]
+      "#{log_action "PUT", event.duration} KEY=%s KIND=%s PARENT=%s PROPERTIES=%s" % [ log_key(entity.key), entity.kind, log_key(entity.parent), entity.properties.inspect ]
     end
 
-    def delete(event)
-      debug "#{log_action "DELETE", event.duration} KEY=%s" % [ log_key(event.payload[:key]) ]
+    debug_event :delete do |event|
+      "#{log_action "DELETE", event.duration} KEY=%s" % [ log_key(event.payload[:key]) ]
     end
 
     private
