@@ -5,26 +5,36 @@ module Thrust::Datastore
 
       filters = query.filter_predicates.map { |predicate| "#{predicate.property_name} #{predicate.operator} #{predicate.value.inspect}" }.join(', ')
 
-      debug "PREPARE QUERY KIND=%s ANCESTOR=%s FILTERS={ %s } (%.1fms)" % [ query.kind, query.ancestor, filters, event.duration ]
+      debug "#{log_action "PREPARE QUERY", event.duration} KIND=%s ANCESTOR=%s FILTERS={ %s }" % [ query.kind, query.ancestor, filters ]
     end
 
     def get(event)
       key = event.payload[:key]
 
-      debug "GET KEY=%s (%.1fms)" % [ log_key(key), event.duration ]
+      debug "#{log_action "GET", event.duration} KEY=%s" % [ log_key(key) ]
     end
 
     def put(event)
       entity = event.payload[:entity]
 
-      debug "PUT KEY=%s KIND=%s PARENT=%s PROPERTIES=%s (%.1fms)" % [ log_key(entity.key), entity.kind, log_key(entity.parent), entity.properties.inspect, event.duration ]
+      debug "#{log_action "PUT", event.duration} KEY=%s KIND=%s PARENT=%s PROPERTIES=%s" % [ log_key(entity.key), entity.kind, log_key(entity.parent), entity.properties.inspect ]
     end
 
     def delete(event)
-      debug "DELETE KEY=%s (%.1fms)" % [ log_key(event.payload[:key]), event.duration ]
+      debug "#{log_action "DELETE", event.duration} KEY=%s" % [ log_key(event.payload[:key]) ]
     end
 
     private
+
+    def log_action(name, duration)
+      prefix = "  #{name} (%.1fms)  " % duration
+
+      odd? ? color(prefix, CYAN) : color(prefix, MAGENTA)
+    end
+
+    def odd?
+      @odd_or_even = !@odd_or_even
+    end
 
     def log_key(key)
       key.nil? ? 'NULL' : "(%d,%s)" % [ key.get_id, key.kind ]
