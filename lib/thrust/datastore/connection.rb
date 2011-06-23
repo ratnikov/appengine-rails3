@@ -9,7 +9,7 @@ module Thrust::Datastore
     end
 
     def get(key)
-      datastore.get(key).properties
+      log(:get, :key => key) { datastore.get(key) }.properties
     rescue EntityNotFoundException => error
       key = error.cause.key
       raise RecordNotFound, "Could not find record with ID=#{key.get_id}, KIND=#{key.kind}"
@@ -20,7 +20,7 @@ module Thrust::Datastore
 
       attributes.each { |(k, v)| entity.set_property k, v }
 
-      datastore.put entity
+      log(:put, :entity => entity) { datastore.put entity }
     end
 
     def query(options)
@@ -37,7 +37,7 @@ module Thrust::Datastore
       apply_options query, options
       apply_sorts query, sort
 
-      QueryResult.new perform_query(query)
+      QueryResult.new log(:prepare, :query => query) { datastore.prepare query }
     end
 
     def delete(key)
@@ -50,8 +50,8 @@ module Thrust::Datastore
 
     private
 
-    def perform_query(query)
-      @instrumenter.instrument('query.datastore', :query => query) { datastore.prepare query }
+    def log(action, payload)
+      @instrumenter.instrument("#{action}.datastore", payload) { yield }
     end
 
     def apply_options(query, options)
