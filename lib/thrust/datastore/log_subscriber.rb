@@ -5,7 +5,7 @@ module Thrust::Datastore
 
       filters = query.filter_predicates.map { |predicate| "#{predicate.property_name} #{predicate.operator} #{predicate.value.inspect}" }.join(', ')
 
-      debug "#{log_action "PREPARE QUERY", event.duration} KIND=%s ANCESTOR=%s FILTERS={ %s }" % [ query.kind, query.ancestor, filters ]
+      debug "#{log_action "PREPARE QUERY", event.duration} KIND=%s ANCESTOR=%s FILTERS={ %s }" % [ query.kind, log_key(query.ancestor), filters ]
     end
 
     def get(event)
