@@ -2,6 +2,8 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 
+Dir["spec/support/**/*"].each { |support_file| require support_file }
+
 require 'thrust'
 
 require 'capybara/rspec'

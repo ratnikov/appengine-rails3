@@ -2,30 +2,7 @@ require 'spec_helper'
 
 module Thrust::Logging
   describe Rails do
-    class TestLogger
-      def close
-        @closed = true
-      end
-
-      def flush
-        @flushed = true
-      end
-
-      def add(*args)
-        messages.push args
-      end
-
-      def messages
-        @messages ||= [ ]
-        @messages
-      end
-
-      def flushed?; !!@flushed end
-      def closed?; !!@closed end
-    end
-
-
-    before { ::Rails.logger = @logger = TestLogger.new; ::Thrust::Logging::Rails.initialize! }
+    before { ::Rails.logger = @logger = ::TestLogger.new; ::Thrust::Logging::Rails.initialize! }
     java_import 'java.util.logging.Logger'
 
     it "should intercept java logger and forward to Rails.logger" do
