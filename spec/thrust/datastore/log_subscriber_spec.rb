@@ -70,5 +70,20 @@ module Thrust::Datastore
         [ @create, @update ].each { |log| log.should =~ /\d+ms/ }
       end
     end
+
+    context "#delete" do
+      before do
+        key = @connection.put 'tests', :foo => 'bar'
+
+        @connection.delete key
+
+        @debug = @logger.debugs.last
+      end
+      
+      it { @debug.should =~ /DELETE/ }
+
+      it("should say what record got deleted") { @debug.should =~ /KEY=\(\d+,tests\)/ }
+      it("should show how long query took") { @debug.should =~ /\d+ms/ }
+    end
   end
 end

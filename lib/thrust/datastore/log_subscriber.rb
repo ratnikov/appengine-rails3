@@ -4,9 +4,8 @@ module Thrust::Datastore
       query = event.payload[:query]
 
       filters = query.filter_predicates.map { |predicate| "#{predicate.property_name} #{predicate.operator} #{predicate.value.inspect}" }.join(', ')
-      message = "PREPARE QUERY KIND=%s ANCESTOR=%s FILTERS={ %s } (%.1fms)" % [ query.kind, query.ancestor, filters, event.duration ]
 
-      debug message
+      debug "PREPARE QUERY KIND=%s ANCESTOR=%s FILTERS={ %s } (%.1fms)" % [ query.kind, query.ancestor, filters, event.duration ]
     end
 
     def get(event)
@@ -19,6 +18,10 @@ module Thrust::Datastore
       entity = event.payload[:entity]
 
       debug "PUT KEY=%s KIND=%s PARENT=%s PROPERTIES=%s (%.1fms)" % [ log_key(entity.key), entity.kind, log_key(entity.parent), entity.properties.inspect, event.duration ]
+    end
+
+    def delete(event)
+      debug "DELETE KEY=%s (%.1fms)" % [ log_key(event.payload[:key]), event.duration ]
     end
 
     private

@@ -41,7 +41,7 @@ module Thrust::Datastore
     end
 
     def delete(key)
-      datastore.delete key
+      log(:delete, :key => key) { datastore.delete key }
     end
 
     def create_key(kind, id)
