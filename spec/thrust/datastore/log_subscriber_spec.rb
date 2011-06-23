@@ -18,17 +18,15 @@ module Thrust::Datastore
       before do
         @connection.query :kind => 'tests', :string => 'foo', :number => 1, :boolean => true
 
-        (@level, @message) = @logger.messages.last
+        @debug = @logger.debugs.last
       end
 
-      it("should log a debug message") { @level.should == Logger::Severity::DEBUG }
-
-      it("should log what kind of query it was") { @message.should =~ /PREPARE QUERY.*?KIND=tests/ }
+      it("should log what kind of query it was") { @debug.should =~ /PREPARE QUERY.*?KIND=tests/ }
       
-      it("should quote string filters") { @message.should =~ /string = "foo"/ }
-      it("should not quote numeric filters") { @message.should =~ /number = 1/ }
-      it("should display booleans as true/false") { @message.should =~ /boolean = true/ }
-      it("should include how long the action took") { @message.should =~ /\d+ms/ }
+      it("should quote string filters") { @debug.should =~ /string = "foo"/ }
+      it("should not quote numeric filters") { @debug.should =~ /number = 1/ }
+      it("should display booleans as true/false") { @debug.should =~ /boolean = true/ }
+      it("should include how long the action took") { @debug.should =~ /\d+ms/ }
     end
 
     context "#get" do
