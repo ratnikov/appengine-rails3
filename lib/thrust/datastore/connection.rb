@@ -2,8 +2,11 @@ require 'thrust/datastore/query_result'
 
 module Thrust::Datastore
   class Connection
-
     include_package 'com.google.appengine.api.datastore'
+
+    def initialize
+      @instrumenter = ActiveSupport::Notifications.instrumenter
+    end
 
     def get(key)
       datastore.get(key).properties
@@ -34,7 +37,7 @@ module Thrust::Datastore
       apply_options query, options
       apply_sorts query, sort
 
-      QueryResult.new datastore.prepare(query)
+      QueryResult.new perform_query(query)
     end
 
     def delete(key)
@@ -46,6 +49,10 @@ module Thrust::Datastore
     end
 
     private
+
+    def perform_query(query)
+      @instrumenter.instrument('query.datastore', :query => query) { datastore.prepare query }
+    end
 
     def apply_options(query, options)
       options.each { |(k, v)| query.add_filter k, Query::FilterOperator::EQUAL, v }

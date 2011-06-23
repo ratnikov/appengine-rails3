@@ -1,4 +1,6 @@
 class TestLogger
+  include Logger::Severity
+
   def close
     @closed = true
   end
@@ -9,6 +11,14 @@ class TestLogger
 
   def add(*args)
     messages.push args
+  end
+
+  Logger::Severity.constants.each do |konst|
+    class_eval <<-EVAL, __FILE__, __LINE__
+    def #{konst.downcase}(message)
+      add #{konst}, message
+    end
+    EVAL
   end
 
   def messages
