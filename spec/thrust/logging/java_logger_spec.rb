@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-require 'thrust/logging/java'
+require 'thrust/logging/java_logger'
 
 module Thrust::Logging
-  describe Java do
+  describe JavaLogger do
     java_import 'java.util.logging.Level'
 
     class TestHandler < ::Java::JavaUtilLogging::Handler
@@ -27,15 +27,15 @@ module Thrust::Logging
       root.handlers.each { |h| root.remove_handler h }
       root.add_handler @handler = TestHandler.new
 
-      Thrust::Logging::Java.initialize!
+      @logger = JavaLogger.new
     end
 
     it "should redirect Rails.logger to java log" do
-      ::Rails.logger.debug 'debug message'
-      ::Rails.logger.info 'info message'
-      ::Rails.logger.warn 'warning message'
-      ::Rails.logger.error 'error message'
-      ::Rails.logger.fatal 'fatal message'
+      @logger.debug 'debug message'
+      @logger.info 'info message'
+      @logger.warn 'warning message'
+      @logger.error 'error message'
+      @logger.fatal 'fatal message'
 
       @handler.records.should == [
         [ ::Java::JavaUtilLogging::Level::FINE, 'debug message', 'Rails' ],
@@ -47,14 +47,14 @@ module Thrust::Logging
     end
 
     it "should allow overriding level" do
-      ::Rails.logger.level = ::Logger::Severity::WARN
+      @logger.level = ::Logger::Severity::WARN
 
-      ::Rails.logger.info 'info message 1'
-      ::Rails.logger.warn 'warning message'
+      @logger.info 'info message 1'
+      @logger.warn 'warning message'
 
-      ::Rails.logger.level = ::Logger::Severity::DEBUG
+      @logger.level = ::Logger::Severity::DEBUG
 
-      ::Rails.logger.info 'info message 2'
+      @logger.info 'info message 2'
 
       @handler.records.should == [
         [ ::Java::JavaUtilLogging::Level::WARNING, 'warning message', 'Rails' ],

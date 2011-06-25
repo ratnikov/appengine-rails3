@@ -44,8 +44,8 @@ module Thrust::Logging
 
     extend self
 
-    def initialize!
-      @handler = Handler.new ::Rails.logger
+    def initialize!(logger)
+      @handler = Handler.new logger
 
       root_logger = ::Java::JavaUtilLogging::Logger.get_logger ''
 

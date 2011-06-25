@@ -20,5 +20,3 @@ end
 
 require 'thrust/datastore/log_subscriber'
 require 'thrust/datastore/record'
-
-require 'thrust/datastore/railtie' if defined?(::Rails)

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Thrust::Logging
   describe Rails do
-    before { ::Rails.logger = @logger = ::TestLogger.new; ::Thrust::Logging::Rails.initialize! }
+    before { @logger = ::TestLogger.new; ::Thrust::Logging::Rails.initialize!(@logger) }
     java_import 'java.util.logging.Logger'
 
     it "should intercept java logger and forward to Rails.logger" do

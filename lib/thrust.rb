@@ -4,29 +4,18 @@ Dir.glob(File.join(File.dirname(__FILE__), '..', 'vendor', 'appengine-java-sdk',
   require jar
 end
 
-require 'active_support/core_ext/class/inheritable_attributes'
+require 'active_support/core_ext/class/attribute_accessors'
 
 module Thrust
   extend self
 
-  def configure
-    config = Configuration.new
-
-    yield config
-
-    config.initialize!
-  end
-
-  def logger
-    Rails.logger
-  end
-
-  def logger=(logger)
-    Rails.logger = logger
-  end
+  attr_accessor :logger
 end
 
-require 'thrust/configuration'
 require 'thrust/controller_extensions'
 require 'thrust/datastore'
 require 'thrust/logging'
+
+require 'thrust/railtie' if defined?(::Rails)
+
+ActiveSupport.run_load_hooks(:thrust, Thrust)
