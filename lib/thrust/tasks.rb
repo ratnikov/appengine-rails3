@@ -2,7 +2,7 @@ require 'rake'
 
 require 'warbler'
 
-SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.5.0.1.zip'
+SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.5.1.zip'
 
 config = Warbler::Config.new do |config|
   config.features = %w(gemjar)
@@ -32,7 +32,7 @@ namespace :thrust do
         system "curl #{SDK_LOCATION} -o #{zip_location}"
       end
 
-      puts "Unpacking..."
+      puts "Unpacking #{zip_location}..."
       system "unzip -qq -o #{zip_location}"
       puts "Done!"
     end
