@@ -11,6 +11,11 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
+# HACK HACK HACK
+#
+# lib hasn't been added to load path here yet, but need to require thrust
+# to setup railtie. This hack should go away once thrust is extracted as a gem
+$LOAD_PATH << File.expand_path("../../lib", __FILE__)
 require 'thrust'
 
 module AppengineRails3
