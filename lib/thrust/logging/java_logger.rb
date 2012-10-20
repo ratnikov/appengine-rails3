@@ -1,3 +1,5 @@
+require 'logger'
+
 module Thrust::Logging
   class JavaLogger
     include ::Logger::Severity
