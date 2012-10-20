@@ -32,14 +32,16 @@ describe Thrust::Datastore::Record do
       end
     end
   end
-  
+
   describe "attributes" do
     it "should return timestamps that behave as ruby time objects" do
       one = Foo.create :time => now = Time.now
 
       time = Foo.find(one).time
 
-      (time - 1.second .. time + 1.second).should include(now)
+      # Cannot use Time in range in 1.9, so have
+      # to compare integers instead
+      (-1 .. 1).should include(now - time)
     end
   end
 
@@ -135,7 +137,7 @@ describe Thrust::Datastore::Record do
 
   it "should override equality" do
     new_record = Foo.new(:foo => 'bar')
-    
+
     new_record.should_not == Foo.new(:foo => 'bar')
     new_record.should == new_record
 

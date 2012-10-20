@@ -14,9 +14,12 @@ describe Thrust::Datastore::Timestamps do
   it "should create created_at and updated_at timestamp on creation" do
     before_create = Time.now
 
+    sleep 0.01
+
     foo = TimestampRecord.create
 
-    (before_create..Time.now).should include(foo.created_at, foo.updated_at)
+    foo.created_at.should be > before_create
+    foo.updated_at.should be > before_create
   end
 
   it "should update only updated_at on update" do
@@ -24,9 +27,11 @@ describe Thrust::Datastore::Timestamps do
 
     before_update = Time.now
 
+    sleep 0.01
+
     foo.save
 
-    (before_update..Time.now).should include(foo.updated_at)
-    (before_update..Time.now).should_not include(foo.created_at)
+    foo.updated_at.should be > before_update
+    foo.created_at.should be < before_update
   end
 end
