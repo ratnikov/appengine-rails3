@@ -1,12 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.7'
-gem 'arel', '2.0.9'
+gem 'rails', '~> 3.2.0'
 gem 'dynamic_form'
 
 group :development, :test do
   gem 'jruby-openssl'
-  gem 'rake', '0.8.7'
+  gem 'rake'
   gem 'warbler'
   gem 'capybara'
   gem 'rspec'
