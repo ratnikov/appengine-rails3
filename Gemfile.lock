@@ -147,7 +147,6 @@ DEPENDENCIES
   dynamic_form
   jruby-openssl
   rails (~> 3.2.0)
-  rake
   rspec
   rspec-rails
   warbler
