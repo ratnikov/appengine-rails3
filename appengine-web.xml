@@ -13,4 +13,6 @@
     <property name="jruby.rack.logging" value="stdout"/>
     <property name="jruby.rack.input.rewindable" value="false"/>
   </system-properties>
+
+  <threadsafe>true</threadsafe>
 </appengine-web-app>
