@@ -3,17 +3,17 @@ source 'http://rubygems.org'
 gem 'rails', '~> 3.2.0'
 gem 'dynamic_form'
 
-group :development do
+group :development, :test do
   gem 'warbler'
   gem 'jruby-openssl'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'database_cleaner'
 end
 
 group :test do
-  gem 'capybara'
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'cucumber-rails'
-  gem 'database_cleaner'
+  gem 'cucumber-rails', :require => false
 end
 
 # Bundle edge Rails instead:
