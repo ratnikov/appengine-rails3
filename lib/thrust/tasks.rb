@@ -38,14 +38,19 @@ namespace :thrust do
     end
   end
 
-  desc "Starts AppEngine development server"
-  task :jetty => [ 'install-sdk', 'war:unpack' ] do
-    # Need to clean up rubyopts, or server will die with 'bundler/setup not found' error
-    ENV['RUBYOPT'] = ENV['RUBYOPT'].gsub '-rbundler/setup', '' unless ENV['RUBYOPT'].empty?
+  namespace :jetty do
+    desc 'Run AppEngine development server without building new package'
+    task 'nopackage' => [ 'install-sdk' ] do
+      # Need to clean up rubyopts, or server will die with 'bundler/setup not found' error
+      ENV['RUBYOPT'] = ENV['RUBYOPT'].gsub '-rbundler/setup', '' unless ENV['RUBYOPT'].empty?
 
-    # doing exec, since the server blocks further execution anyway
-    exec "sh sdk/#{sdk_location}/bin/dev_appserver.sh war"
+      # doing exec, since the server blocks further execution anyway
+      exec "sh sdk/#{sdk_location}/bin/dev_appserver.sh war"
+    end
   end
+
+  desc "Starts AppEngine development server"
+  task :jetty => [ 'install-sdk', 'war:unpack', 'jetty:nopackage' ]
 
   namespace :deploy do
     desc 'Pushes current unpacked war package to appengine'
