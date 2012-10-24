@@ -12,6 +12,7 @@ module Thrust
   attr_accessor :logger
 end
 
+require 'thrust/hacks'
 require 'thrust/controller_extensions'
 require 'thrust/datastore'
 require 'thrust/logging'
