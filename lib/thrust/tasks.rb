@@ -2,10 +2,10 @@ require 'rake'
 
 require 'warbler'
 
-SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.7.2.1.zip'
+SDK_LOCATION = 'http://googleappengine.googlecode.com/files/appengine-java-sdk-1.7.3.zip'
 
 config = Warbler::Config.new do |config|
-  config.features = %w(gemjar)
+  # config.features = %w(gemjar)
   config.dirs = %w(app config lib log tmp)
   config.includes = FileList["appengine-web.xml"]
   config.java_libs += FileList["vendor/appengine*/*jar"]

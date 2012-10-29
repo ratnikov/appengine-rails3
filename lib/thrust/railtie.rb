@@ -25,4 +25,4 @@ module Thrust
   end
 end
 
-require 'thrust/datastore/railtie'
+# require 'thrust/datastore/railtie'
